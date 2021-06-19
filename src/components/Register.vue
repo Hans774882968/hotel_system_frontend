@@ -50,6 +50,13 @@ export default {
       }
     }
   },
+  // 添加自定义背景
+  beforeCreate () {
+    document.querySelector('body').setAttribute('style', 'background-image: url("/static/bg.png")')
+  },
+  beforeDestroy () {
+    document.body.removeAttribute('style')
+  },
   methods: {
     showErr (msg) {
       this.$message({
@@ -112,10 +119,11 @@ export default {
 <style scoped>
 .register{
   width: 30%;
+  background-color: white;
   margin-left: calc((100% - 30%) / 2);
   margin-top: 8rem;
-  border: 1px solid #ddd;
   box-sizing: border-box;
+  border-radius: 0.75rem;
   padding: 2rem;
 }
 .register .field{
