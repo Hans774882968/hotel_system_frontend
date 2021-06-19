@@ -1,7 +1,14 @@
 <template>
   <div class="login">
-    <el-input class="field" v-model="LoginForm.email" type="text" name="email" placeholder="邮箱" />
+    <h2>登录</h2>
     <el-input class="field"
+              prefix-icon="el-icon-message"
+              v-model="LoginForm.email"
+              type="text"
+              name="email"
+              placeholder="邮箱" />
+    <el-input class="field"
+              prefix-icon="el-icon-lock"
               v-model="LoginForm.password"
               type="password"
               name="password"

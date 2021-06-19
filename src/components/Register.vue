@@ -1,7 +1,14 @@
 <template>
   <div class="register">
-    <el-input class="field" v-model="RegisterForm.email" type="text" name="email" placeholder="邮箱" />
+    <h2>注册</h2>
     <el-input class="field"
+              prefix-icon="el-icon-message"
+              v-model="RegisterForm.email"
+              type="text"
+              name="email"
+              placeholder="邮箱" />
+    <el-input class="field"
+              prefix-icon="el-icon-user"
               v-model="RegisterForm.name"
               type="text"
               name="name"
@@ -12,8 +19,14 @@
       <el-radio v-model="RegisterForm.sex" label="1">男</el-radio>
       <el-radio v-model="RegisterForm.sex" label="2">女</el-radio>
     </div>
-    <el-input class="field" v-model="RegisterForm.phone" type="text" name="phone" placeholder="手机号码" />
     <el-input class="field"
+              prefix-icon="el-icon-phone"
+              v-model="RegisterForm.phone"
+              type="text"
+              name="phone"
+              placeholder="手机号码" />
+    <el-input class="field"
+              prefix-icon="el-icon-lock"
               v-model="RegisterForm.password"
               type="password"
               name="password"
