@@ -1,38 +1,47 @@
 <template>
-  <div class="register">
-    <h2>注册</h2>
-    <el-input class="field"
-              prefix-icon="el-icon-message"
-              v-model="RegisterForm.email"
-              type="text"
-              name="email"
-              placeholder="邮箱" />
-    <el-input class="field"
-              prefix-icon="el-icon-user"
-              v-model="RegisterForm.name"
-              type="text"
-              name="name"
-              placeholder="姓名"
-              maxlength="10"
-              show-word-limit />
-    <div class="field">
-      <el-radio v-model="RegisterForm.sex" label="1">男</el-radio>
-      <el-radio v-model="RegisterForm.sex" label="2">女</el-radio>
+  <div class="container">
+    <div class="register">
+      <h2>注册</h2>
+      <el-input class="field"
+                prefix-icon="el-icon-message"
+                v-model="RegisterForm.email"
+                type="text"
+                name="email"
+                placeholder="邮箱" />
+      <el-input class="field"
+                prefix-icon="el-icon-user"
+                v-model="RegisterForm.name"
+                type="text"
+                name="name"
+                placeholder="姓名"
+                maxlength="10"
+                show-word-limit />
+      <div class="field">
+        <el-radio v-model="RegisterForm.sex" label="1">男</el-radio>
+        <el-radio v-model="RegisterForm.sex" label="2">女</el-radio>
+      </div>
+      <el-input class="field"
+                prefix-icon="el-icon-phone"
+                v-model="RegisterForm.phone"
+                type="text"
+                name="phone"
+                placeholder="手机号码" />
+      <el-input class="field"
+                prefix-icon="el-icon-lock"
+                v-model="RegisterForm.password"
+                type="password"
+                name="password"
+                placeholder="密码"
+                show-password />
+      <div class="captcha">
+        <input v-model="RegisterForm.captcha" class="captcha-input" />
+        <input type="button" class="captcha-btn" value="获取验证码" @click="sendCaptcha" />
+      </div>
+      <el-button class="btn" type="primary" @click="register">注册</el-button>
+      <div class="field">
+        <router-link to="/login">已有账号，直接登录></router-link>
+      </div>
     </div>
-    <el-input class="field"
-              prefix-icon="el-icon-phone"
-              v-model="RegisterForm.phone"
-              type="text"
-              name="phone"
-              placeholder="手机号码" />
-    <el-input class="field"
-              prefix-icon="el-icon-lock"
-              v-model="RegisterForm.password"
-              type="password"
-              name="password"
-              placeholder="密码"
-              show-password />
-    <el-button class="btn" type="primary" @click="register">注册</el-button>
   </div>
 </template>
 
@@ -46,16 +55,10 @@ export default {
         name: '',
         sex: '1',
         phone: '',
-        password: ''
+        password: '',
+        captcha: ''
       }
     }
-  },
-  // 添加自定义背景
-  beforeCreate () {
-    document.querySelector('body').setAttribute('style', 'background-image: url("/static/bg.png")')
-  },
-  beforeDestroy () {
-    document.body.removeAttribute('style')
   },
   methods: {
     showErr (msg) {
@@ -63,6 +66,25 @@ export default {
         message: msg,
         type: 'warning',
         center: true
+      })
+    },
+    sendCaptcha () {
+      if (!this.RegisterForm.email.length) {
+        this.showErr('请填写email')
+        return false
+      }
+      this.$axios.get('/send_captcha', {
+        params: {
+          email: this.RegisterForm.email
+        }
+      }).then(res => {
+        this.$message({
+          message: '验证码已发送',
+          type: 'success',
+          center: true
+        })
+      }).catch(res => {
+        this.showErr('验证码发送失败，请检查网络设置')
       })
     },
     formCheck () {
@@ -82,6 +104,10 @@ export default {
         this.showErr('请填写密码')
         return false
       }
+      if (!this.RegisterForm.captcha.length) {
+        this.showErr('请填写验证码')
+        return false
+      }
       return true
     },
     register () {
@@ -96,17 +122,15 @@ export default {
         }
       }).then(res => {
         let dat = res.data
-        let msg = ''
         if (dat.code === 200) {
-          msg = '注册成功'
+          this.$message({
+            message: '注册成功',
+            type: 'success',
+            center: true
+          })
         } else {
-          msg = '注册失败'
+          this.showErr('注册失败')
         }
-        this.$message({
-          message: msg,
-          type: 'success',
-          center: true
-        })
       }).catch(res => {
         this.showErr('注册失败，请检查网络设置')
       })
@@ -117,17 +141,55 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.container{
+  background-image: url("/static/bg.png");
+  height: 100vh;
+  overflow: hidden;/*bfc*/
+}
 .register{
   width: 30%;
   background-color: white;
   margin-left: calc((100% - 30%) / 2);
-  margin-top: 8rem;
+  margin-top: 5rem;
   box-sizing: border-box;
   border-radius: 0.75rem;
   padding: 2rem;
 }
-.register .field{
+.field{
   margin: 0.75rem 0;
+}
+.captcha{
+  margin: 0.75rem 0;
+  width: 100%;
+  display: flex;
+}
+.captcha > .captcha-input{
+  margin-right: 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #DCDFE6;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+  outline: 0;
+  box-sizing: border-box;
+  height: 40px;/*等于el-input的总高度*/
+  line-height: 40px;
+  flex: 2;
+}
+.captcha > .captcha-btn{
+  color: #FFF;
+  background-color: #409EFF;
+  border: 0;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  height: 40px;/*等于el-input的总高度*/
+  flex: 1;
+}
+.captcha-btn:focus, .captcha-btn:hover{
+  background: #66b1ff;
+  color: #FFF;
+}
+.captcha-btn:active{
+  background: #3a8ee6;
 }
 .register >>> .el-input__inner{
   border-radius: 0.5rem;
@@ -138,5 +200,9 @@ export default {
   margin: 1rem 0;
   width: 100%;
   border-radius: 0.5rem;
+}
+.register a{
+  color: #409EFF;
+  text-decoration: none;
 }
 </style>

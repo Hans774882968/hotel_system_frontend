@@ -1,20 +1,25 @@
 <template>
-  <div class="login">
-    <h2>登录</h2>
-    <el-input class="field"
-              prefix-icon="el-icon-message"
-              v-model="LoginForm.email"
-              type="text"
-              name="email"
-              placeholder="邮箱" />
-    <el-input class="field"
-              prefix-icon="el-icon-lock"
-              v-model="LoginForm.password"
-              type="password"
-              name="password"
-              placeholder="密码"
-              show-password />
-    <el-button class="btn" type="primary" @click="login">登录</el-button>
+  <div class="container">
+    <div class="login">
+      <h2>登录</h2>
+      <el-input class="field"
+                prefix-icon="el-icon-message"
+                v-model="LoginForm.email"
+                type="text"
+                name="email"
+                placeholder="邮箱" />
+      <el-input class="field"
+                prefix-icon="el-icon-lock"
+                v-model="LoginForm.password"
+                type="password"
+                name="password"
+                placeholder="密码"
+                show-password />
+      <el-button class="btn" type="primary" @click="login">登录</el-button>
+      <div class="field">
+        <router-link to="/register">没有账号，去注册></router-link>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -28,13 +33,6 @@ export default {
         password: ''
       }
     }
-  },
-  // 添加自定义背景
-  beforeCreate () {
-    document.querySelector('body').setAttribute('style', 'background-image: url("/static/bg.png")')
-  },
-  beforeDestroy () {
-    document.body.removeAttribute('style')
   },
   methods: {
     showErr (msg) {
@@ -64,17 +62,15 @@ export default {
         }
       }).then(res => {
         let dat = res.data
-        let msg = ''
         if (dat.code === 200) {
-          msg = '登录成功'
+          this.$message({
+            message: '登录成功',
+            type: 'success',
+            center: true
+          })
         } else {
-          msg = '登录失败'
+          this.showErr('登录失败')
         }
-        this.$message({
-          message: msg,
-          type: 'success',
-          center: true
-        })
       }).catch(res => {
         this.showErr('登录失败，请检查网络设置')
       })
@@ -85,6 +81,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.container{
+  background-image: url("/static/bg.png");
+  height: 100vh;
+  overflow: hidden;/*bfc*/
+}
 .login{
   width: 30%;
   background-color: white;
@@ -106,5 +107,9 @@ export default {
   margin: 1rem 0;
   width: 100%;
   border-radius: 0.5rem;
+}
+.login a{
+  color: #409EFF;
+  text-decoration: none;
 }
 </style>
