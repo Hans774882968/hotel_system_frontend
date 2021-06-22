@@ -1,6 +1,4 @@
 <template>
-  <!--注释-->
-  <!--qwqqwqqwqqwq-->
   <el-menu
     mode="horizontal"
     background-color="#545c64"
