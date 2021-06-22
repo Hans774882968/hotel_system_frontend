@@ -35,7 +35,12 @@
                 show-password />
       <div class="captcha">
         <input v-model="RegisterForm.captcha" class="captcha-input" />
-        <input type="button" class="captcha-btn" value="获取验证码" @click="sendCaptcha" />
+        <el-button type="primary"
+                   :disabled="captchaObj.sent"
+                   class="captcha-btn"
+                   @click="sendCaptcha">
+          {{ captchaObj.sent ? `${captchaObj.countDown} s` : '获取验证码'}}
+        </el-button>
       </div>
       <el-button class="btn" type="primary" @click="register">注册</el-button>
       <div class="field">
@@ -57,6 +62,10 @@ export default {
         phone: '',
         password: '',
         captcha: ''
+      },
+      captchaObj: {
+        sent: false,
+        countDown: 0
       }
     }
   },
@@ -68,10 +77,22 @@ export default {
         center: true
       })
     },
+    afterSentCaptcha () {
+      this.captchaObj.sent = true
+      this.captchaObj.countDown = 15
+      const t = setInterval(() => {
+        this.captchaObj.countDown--
+        if (!this.captchaObj.countDown) {
+          clearInterval(t)
+          this.captchaObj.sent = false
+        }
+      }, 1000)
+    },
     sendCaptcha () {
+      if (this.captchaObj.sent) return
       if (!this.RegisterForm.email.length) {
         this.showErr('请填写email')
-        return false
+        return
       }
       this.$axios.get('/send_captcha', {
         params: {
@@ -83,8 +104,10 @@ export default {
           type: 'success',
           center: true
         })
+        this.afterSentCaptcha()
       }).catch(res => {
         this.showErr('验证码发送失败，请检查网络设置')
+        this.afterSentCaptcha()
       })
     },
     formCheck () {
@@ -176,20 +199,8 @@ export default {
   flex: 2;
 }
 .captcha > .captcha-btn{
-  color: #FFF;
-  background-color: #409EFF;
-  border: 0;
-  cursor: pointer;
   border-radius: 0.5rem;
-  height: 40px;/*等于el-input的总高度*/
   flex: 1;
-}
-.captcha-btn:focus, .captcha-btn:hover{
-  background: #66b1ff;
-  color: #FFF;
-}
-.captcha-btn:active{
-  background: #3a8ee6;
 }
 .register >>> .el-input__inner{
   border-radius: 0.5rem;
