@@ -5,7 +5,7 @@
     text-color="#fff"
     active-text-color="#ffd04b">
     <el-menu-item index="1">
-      <router-link to="/register">注册</router-link>
+      <router-link to="/register" >注册</router-link>
     </el-menu-item>
     <el-menu-item index="2">
       <router-link to="/login">登录</router-link>
@@ -20,10 +20,17 @@ export default {
 </script>
 
 <style scoped>
+  router-link{
+    text-align: right;
+  }
 a {
   color: #42b983;
   text-decoration: none;
+}.
+router-link {
+  text-align: left ;
 }
+
 h1, h2 {
   font-weight: normal;
 }
