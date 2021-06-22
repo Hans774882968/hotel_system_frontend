@@ -20,9 +20,7 @@ export default {
 </script>
 
 <style scoped>
-  router-link{
-    text-align: right;
-  }
+
 a {
   color: #42b983;
   text-decoration: none;
