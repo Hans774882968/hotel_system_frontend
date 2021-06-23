@@ -13,25 +13,15 @@
         <router-link to="/login" >登录</router-link>
       </el-menu-item>
     </el-menu>
-    <!--<table>-->
-      <!--<tr>-->
-        <!--<td>-->
-                  <!--</td>-->
-      <!--</tr>-->
-    <!--</table>-->
     <h4>欢迎使用</h4> <div><h1 class="center">酒店辅助管理系统</h1></div>
-    <!--1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111-->
-    <div class="search_from_container">
-      <form action="/Search" class="search_form" id="search_form">
-        <div class="d-flex flex-sm-row flex-column align-items-sm-start align-items-center justify-content-sm-between .mdui-shadow-6">
-          <input type="text" name="keywords" class="searc_input" aria-placeholder="输入目的地，城市或景点" required="required">
-          <input type="date"  class="search_input" value="入住日期"  required="required">
-          <input type="date"  class="search_input" value="退房日期" placeholder="退房日期" required="required">
-          <button class="search_button" >搜索</button>
-        </div>
-      </form>
-    </div>
-    <!--1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111-->
+    <form action="/Search" class="search_form" id="search_form">
+      <div class="search_container">
+        <input type="text" name="keywords" class="searc_input" aria-placeholder="输入目的地，城市或景点" required="required">
+        <input type="date"  class="search_input" value="入住日期"  required="required">
+        <input type="date"  class="search_input" value="退房日期" placeholder="退房日期" required="required">
+        <button class="search_button" >搜索</button>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -42,68 +32,51 @@ export default {
 </script>
 
 <style scoped>
-  /*-----------------------------------------------------------------------*/
-  /*.search_from_container{*/
-    /*margin-top: 36px;*/
-  /*}*/
-  /*.search_form {*/
-    /*display: block;*/
-  /*}*/
-  /*.d-flex {*/
-    /*display: -ms-flexbox!important;*/
-    /*display: flex!important;*/
-  /*}*/
-  /*.flex-column {*/
-    /*-ms-flex-direction: column!important;*/
-    /*flex-direction: column!important;*/
-  /*}*/
-  /*form {*/
-    /*display: block;*/
-    /*margin-top: 0em;*/
-  /*}*/
-  /*.align-items-center {*/
-    /*-ms-flex-align: center!important;*/
-    /*align-items: center!important;*/
-  /*}*/
-  /*.search_input {*/
-    /*display: block;*/
-    /*width: calc(100% - 214px);*/
-    /*height: 57px;*/
-    /*border: none;*/
-    /*outline: none;*/
-    /*padding-left: 27px;*/
-    /*border-radius: 0px;*/
-    /*font-size: 16px;*/
-    /*font-weight: 400;*/
-    /*color: #000000;*/
-  /*}*/
-  /*.search_button {*/
-    /*width: 196px;*/
-    /*height: 57px;*/
-    /*border: none;*/
-    /*outline: none;*/
-    /*background: #ffb400;*/
-    /*border-radius: 0px;*/
-    /*cursor: pointer;*/
-    /*font-size: 16px;*/
-    /*font-weight: 500;*/
-    /*color: #FFFFFF;*/
-  /*}*/
-  /*div {*/
-    /*display: block;*/
-    /*position: relative;*/
-    /*-webkit-box-sizing: border-box;*/
-    /*-moz-box-sizing: border-box;*/
-    /*box-sizing: border-box;*/
-  /*}*/
-  /*-----------------------------------------------------------------------*/
-  /*-----------------------------------------------------------------------*/
-  .tab-location{
-   margin-top: 100px;
-    margin-right:430px;
-    float: right;
-    font-feature-settings: normal;
-  }
+.search_form {
+  display: flex;
+  justify-content: center;
+}
+.search_container{
+  display: flex;
+  width: 60%;
+}
+.search_input {
+  display: block;
+  width: calc(100% - 214px);
+  height: 57px;
+  border: none;
+  outline: none;
+  padding-left: 27px;
+  border-radius: 0px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+}
+.search_button {
+  width: 196px;
+  height: 57px;
+  border: none;
+  outline: none;
+  background: #ffb400;
+  border-radius: 0px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+div {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/*.tab-location{*/
+  /*margin-top: 100px;*/
+  /*margin-right:430px;*/
+  /*float: right;*/
+  /*font-feature-settings: normal;*/
+/*}*/
 .container{
   height: 100vh;
   background-image: url("/static/bg.png");
