@@ -3,29 +3,29 @@
     <Navbar/>
     <h4>欢迎使用</h4>
     <div><h1 class="center">酒店辅助管理系统</h1></div>
-    <form action="/Search" class="search_form" id="search_form">
+    <div class="search_form">
       <div class="search_container">
         <div class="search_row">
           <span>输入地点</span>
           <div class="row_right">
-            <input type="text" name="keywords" class="search_input" placeholder="输入目的地，城市或景点" required="required">
+            <input v-model="keywords" type="text" name="keywords" class="search_input" placeholder="输入目的地，城市或景点" required="required">
           </div>
         </div>
         <div class="search_row">
           <span>入住日期</span>
           <div class="row_right">
-            <input type="date" class="search_input" required="required">
+            <input v-model="date_in" type="date" class="search_input" required="required">
           </div>
         </div>
         <div class="search_row">
           <span>退房日期</span>
           <div class="row_right">
-            <input type="date" class="search_input" required="required">
+            <input v-model="date_out" type="date" class="search_input" required="required">
           </div>
         </div>
         <div class="search_row">
           <span>入住人数</span>
-          <el-select class="row_right" v-model="cur_person_num" placeholder="选择入住人数">
+          <el-select v-model="cur_person_num" class="row_right" placeholder="选择入住人数">
             <el-option
               v-for="item in person_option"
               :key="item.value"
@@ -35,10 +35,10 @@
           </el-select>
         </div>
         <div class="search_row">
-          <button class="search_button">搜索</button>
+          <button class="search_button" @click="search">搜索</button>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -49,17 +49,56 @@ export default {
   components: {Navbar},
   data () {
     return {
+      keywords: '',
+      date_in: '',
+      date_out: '',
       person_option: [{
-        value: '选项1',
+        value: '1',
         label: '1人'
       }, {
-        value: '选项2',
+        value: '2',
         label: '2人'
       }, {
-        value: '选项3',
+        value: '3',
         label: '3人'
       }],
       cur_person_num: ''
+    }
+  },
+  methods: {
+    showErr (msg) {
+      this.$message({
+        message: msg,
+        type: 'warning',
+        center: true
+      })
+    },
+    showSuc (msg) {
+      this.$message({
+        message: msg,
+        type: 'success',
+        center: true
+      })
+    },
+    search () {
+      this.$axios.get('/search', {
+        params: {
+          keywords: this.keywords,
+          date_in: this.date_in,
+          date_out: this.date_out,
+          person: this.cur_person_num
+        }
+      }).then(res => {
+        this.showSuc(res)
+      }).catch(res => {
+        // this.showErr('查询失败，请检查网络设置')
+        this.showErr({
+          keywords: this.keywords,
+          date_in: this.date_in,
+          date_out: this.date_out,
+          person: this.cur_person_num
+        })
+      })
     }
   }
 }
