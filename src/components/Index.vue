@@ -9,16 +9,24 @@
       <el-menu-item index="1">
         <router-link to="/register">注册</router-link>
       </el-menu-item>
-      <el-menu-item index="1">
+      <el-menu-item index="2">
         <router-link to="/login" >登录</router-link>
       </el-menu-item>
     </el-menu>
     <h4>欢迎使用</h4> <div><h1 class="center">酒店辅助管理系统</h1></div>
+    <table align="center">
+      <tr align="center">
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择入住时间</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择退房时间</td>
+      </tr>
+    </table>
     <form action="/Search" class="search_form" id="search_form">
       <div class="search_container">
-        <input type="text" name="keywords" class="searc_input" aria-placeholder="输入目的地，城市或景点" required="required">
-        <input type="date"  class="search_input" value="入住日期"  required="required">
-        <input type="date"  class="search_input" value="退房日期" placeholder="退房日期" required="required">
+        <input type="text" name="keywords" class="search_input" placeholder="输入目的地，城市或景点" required="required">
+        <!--<font>       请选择入住日期           </font>-->
+        <input type="date"  class="search_input"  placeholder="请选择入住日期" required="required">
+        <!--<font style="font-size: 20px;color: darkgrey">       请选择退房日期      </font>-->
+        <input type="date"  class="search_input" value="请选择退房日期"  required="required">
         <button class="search_button" >搜索</button>
       </div>
     </form>
@@ -51,6 +59,7 @@ export default {
   font-size: 16px;
   font-weight: 400;
   color: #000000;
+  margin-left: 50px;
 }
 .search_button {
   width: 196px;
