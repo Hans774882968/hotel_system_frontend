@@ -3,18 +3,40 @@
     <Navbar/>
     <h4>欢迎使用</h4>
     <div><h1 class="center">酒店辅助管理系统</h1></div>
-    <table align="center">
-      <tr align="center">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择入住时间</td>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择退房时间</td>
-      </tr>
-    </table>
     <form action="/Search" class="search_form" id="search_form">
       <div class="search_container">
-        <input type="text" name="keywords" class="search_input" aria-placeholder="输入目的地，城市或景点" required="required">
-        <input type="date" class="search_input" value="入住日期"  required="required">
-        <input type="date" class="search_input" value="退房日期" placeholder="退房日期" required="required">
-        <button class="search_button">搜索</button>
+        <div class="search_row">
+          <span>输入地点</span>
+          <div class="row_right">
+            <input type="text" name="keywords" class="search_input" placeholder="输入目的地，城市或景点" required="required">
+          </div>
+        </div>
+        <div class="search_row">
+          <span>入住日期</span>
+          <div class="row_right">
+            <input type="date" class="search_input" required="required">
+          </div>
+        </div>
+        <div class="search_row">
+          <span>退房日期</span>
+          <div class="row_right">
+            <input type="date" class="search_input" required="required">
+          </div>
+        </div>
+        <div class="search_row">
+          <span>入住人数</span>
+          <el-select class="row_right" v-model="cur_person_num" placeholder="选择入住人数">
+            <el-option
+              v-for="item in person_option"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="search_row">
+          <button class="search_button">搜索</button>
+        </div>
       </div>
     </form>
   </div>
@@ -24,7 +46,22 @@
 import Navbar from './Navbar'
 export default {
   name: 'Index',
-  components: {Navbar}
+  components: {Navbar},
+  data () {
+    return {
+      person_option: [{
+        value: '选项1',
+        label: '1人'
+      }, {
+        value: '选项2',
+        label: '2人'
+      }, {
+        value: '选项3',
+        label: '3人'
+      }],
+      cur_person_num: ''
+    }
+  }
 }
 </script>
 
@@ -35,31 +72,57 @@ export default {
 }
 .search_container{
   display: flex;
-  width: 60%;
+  width: 35%;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 0.75rem 1.5rem;
 }
-.search_input {
+.search_row{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0.75rem 0;
+  font-size: 14px;
+}
+/*圆弧*/
+.search_row input,.search_row > button,.search_row >>> .el-input__inner{
+  border-radius: 0.5rem;
+}
+.search_row span{
+  flex: 1;
+  line-height: 2rem;
+}
+.search_row .row_right{
+  flex: 2.2;
+}
+.search_row .search_input {
   display: block;
+  width: 100%;
   box-sizing: border-box;
-  width: calc(100% - 214px);
-  height: 57px;
-  border: none;
+  height: 2rem;
+  border: 1px solid #ddd;
   outline: none;
-  padding-left: 27px;
-  border-radius: 0px;
-  font-size: 16px;
+  padding: 0 1rem;
   font-weight: 400;
   color: #000000;
-  margin-left: 50px;
+}
+.search_row >>> .el-input__inner{
+  height: 2rem;
+  line-height: 2rem;
+}
+.search_row >>> .el-input__icon{
+  width: 2rem;
+  line-height: 2rem;
 }
 .search_button {
-  width: 196px;
-  height: 57px;
+  width: 100%;
+  height: 2rem;
   border: none;
   outline: none;
   background: #ffb400;
-  border-radius: 0px;
+  border-radius: 0.75rem;
   cursor: pointer;
-  font-size: 16px;
   font-weight: 500;
   color: #FFFFFF;
 }
@@ -73,24 +136,6 @@ div {
 .container{
   height: 100vh;
   background-image: url("/static/bg.png");
-}
-.btn-el-input{
-  width: 180px;
-  height: 50px;
-  /*border: 1px solid #7fcc0b;*/
-  border-right: none;
-  border-radius: 10px;
-}
-.el-btn{
-  position: relative;
-  right: -10px;
-  width: 50px;
-  height: 52px;
-  font-size: 14px;
-  color: white;
-  background: aquamarine;
-  border: 0;
-  border-radius:10px;
 }
 .center{
  /*position: fixed;*/
