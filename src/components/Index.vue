@@ -3,6 +3,12 @@
     <Navbar/>
     <h4>欢迎使用</h4>
     <div><h1 class="center">酒店辅助管理系统</h1></div>
+    <table align="center">
+      <tr align="center">
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择入住时间</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择退房时间</td>
+      </tr>
+    </table>
     <form action="/Search" class="search_form" id="search_form">
       <div class="search_container">
         <input type="text" name="keywords" class="search_input" aria-placeholder="输入目的地，城市或景点" required="required">
@@ -43,6 +49,7 @@ export default {
   font-size: 16px;
   font-weight: 400;
   color: #000000;
+  margin-left: 50px;
 }
 .search_button {
   width: 196px;
