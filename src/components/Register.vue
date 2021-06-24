@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <Navbar/>
     <div class="register">
       <h2>注册</h2>
       <el-input class="field"
@@ -51,8 +52,10 @@
 </template>
 
 <script>
+import Navbar from './Navbar'
 export default {
   name: 'Register',
+  components: {Navbar},
   data () {
     return {
       RegisterForm: {
@@ -173,7 +176,7 @@ export default {
   width: 30%;
   background-color: white;
   margin-left: calc((100% - 30%) / 2);
-  margin-top: 5rem;
+  margin-top: 2rem;
   box-sizing: border-box;
   border-radius: 0.75rem;
   padding: 2rem;
