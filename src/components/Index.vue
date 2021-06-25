@@ -35,13 +35,6 @@
             <br/>
           </el-select>
         </div>
-        <!--*********************************************-->
-        <div>
-          <span>儿&nbsp;&nbsp;&nbsp;&nbsp;童&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <el-radio v-model="radio" border  label="1">1个儿童</el-radio>
-        <el-radio  v-model="radio" border  label="2">2个儿童</el-radio>
-      </div>
-        <!--*********************************************-->
         <div class="search_row">
           <button class="search_button" @click="search">搜索</button>
         </div>
@@ -55,10 +48,6 @@ import Navbar from './Navbar'
 export default {
   name: 'Index',
   components: {Navbar},
-  // {
-  //   return {
-  //     radio: '1'
-  //   }，data () {
   data () {
     return {
       keywords: '',
@@ -189,9 +178,8 @@ div {
   background-image: url("/static/bg.png");
 }
 .center{
- /*position: fixed;*/
   text-align: center;
   font-feature-settings: normal;
-  font-size:60px;
+  font-size: 60px;
 }
 </style>
