@@ -55,11 +55,12 @@ import Navbar from './Navbar'
 export default {
   name: 'Index',
   components: {Navbar},
+  // {
+  //   return {
+  //     radio: '1'
+  //   }，data () {
   data () {
     return {
-      radio: '1'
-    },
-    {
       keywords: '',
       date_in: '',
       date_out: '',
@@ -72,9 +73,7 @@ export default {
       }, {
         value: '3',
         label: '3人'
-      }
-
-      ],
+      }],
       cur_person_num: ''
     }
   },
