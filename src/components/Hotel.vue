@@ -4,10 +4,13 @@
     <div class="container">
       <p>{{ hid }}</p>
       <div class="hotel_info">
-        <p>地址：{{ hotel_info.location }}</p>
-        <p>名称：{{ hotel_info.name }}</p>
+        <h1 class="hotel_name">{{ hotel_info.name }}</h1>
+        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.location }}</p>
         <el-rate v-model="hotel_info.star" disabled></el-rate>
-        <img class="hotel_img" :src="hotel_info.img" :alt="hotel_info.name" />
+        <div class="hotel_headcontext">
+          <img class="hotel_img" :src="hotel_info.img" :alt="hotel_info.name" />
+          <div class="map">地图</div>
+        </div>
       </div>
       <div class="rooms">
         <div class="room" v-for="(item,idx) in rooms" :key="idx">
@@ -149,9 +152,22 @@ div{
   background-color: white;
   margin: 1rem 0;
 }
-.hotel_info .hotel_img{
+.hotel_info .hotel_name{
+  color: #0f294d;
+  font-size: 20px;
+}
+.hotel_info .hotel_headcontext{
+  display: flex;
+  padding: 1rem;
+}
+.hotel_headcontext .hotel_img{
   width: 40rem;
-  height: 19rem;
+  height: 25rem;
+}
+.hotel_headcontext .map{
+  margin-left: 1rem;
+  background-color: antiquewhite;
+  flex: 1;/* 自适应 */
 }
 .rooms{
   width: 80%;
