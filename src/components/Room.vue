@@ -4,6 +4,7 @@
     <div class="container">
       <p>{{ rid }}</p>
       <div class="room_info">
+        <p>房间号：{{ room_info.number }}</p>
         <p>早餐：{{ room_info.breakfast }}</p>
         <p>人数上限：{{ room_info.people_lim }}</p>
         <p>￥{{ room_info.price }}</p>
@@ -18,8 +19,14 @@
       </div>
       <div class="comments">
         <div class="comment" v-for="(item,idx) in comments" :key="idx">
-          <p>{{ item.nickname }}</p>
-          <p>{{ item.content }}</p>
+          <div class="left">
+            <img src="/static/avatar_default.jpg" />
+            <p class="nickname">{{ item.email }}</p>
+            <p class="nickname">{{ item.nickname }}</p>
+          </div>
+          <div class="right">
+            <p>{{ item.content }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -37,30 +44,33 @@ export default {
       room_info: {
         breakfast: '无',
         people_lim: 1,
-        price: 10.9
+        price: 10.9,
+        number: '1001'
       },
       comments: [
         {
-          email: '111',
-          nickname: '222',
-          content: '333'
+          email: '10001@qq.com',
+          nickname: '用户1',
+          content: '很舒服'
         },
         {
-          email: '444',
-          nickname: '555',
-          content: '666'
+          email: '10002@qq.com',
+          nickname: '用户2',
+          content: '不好'
         }
       ],
       mocks: [
         {
           breakfast: '无',
           people_lim: 1,
-          price: 10.9
+          price: 10.9,
+          number: '1001'
         },
         {
           breakfast: '有',
           people_lim: 3,
-          price: 11.9
+          price: 11.9,
+          number: '1002'
         }
       ],
       comment_content: ''
@@ -129,15 +139,17 @@ div{
   flex-direction: column;
   align-items: center;
   background-color: #f5f7fa;
-}
-.room_info,.comment_form,.comments{
-  border: 1px solid #ddd;
+  min-height: 100vh;
 }
 .room_info{
-  width: 60%;
+  width: 80%;
+  background-color: white;
+  margin: 1rem 0;
 }
 .comment_form{
-  width: 60%;
+  width: 80%;
+  background-color: white;
+  margin: 1rem 0;
 }
 .comment_form .content{
   width: 70%;
@@ -146,7 +158,9 @@ div{
   width: 70%;
 }
 .comments{
-  width: 60%;
+  width: 80%;
+  background-color: white;
+  margin: 1rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,5 +171,15 @@ div{
   width: 100%;
   margin: 0.5rem 0;
   border: 1px solid #ddd;
+  display: flex;
+}
+.comment .left{
+  padding: 0.5rem;
+}
+.left .nickname{
+  margin: 0.5rem 0;
+}
+.comment .right{
+  padding: 0.5rem;
 }
 </style>
