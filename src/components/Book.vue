@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <Navbar></Navbar>
     <div class="info">
       <div class="hotel_info">
         <h1 class="hotel_name">{{ hotel_info.name }}</h1>
