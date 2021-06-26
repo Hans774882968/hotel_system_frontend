@@ -6,6 +6,7 @@ import Register from '../components/Register'
 import Room from '../components/Room'
 import Hotel from '../components/Hotel'
 import Book from '../components/Book'
+import NotFound from '../components/NotFound'
 
 Vue.use(Router)
 
@@ -41,6 +42,15 @@ export default new Router({
       path: '/book/:rid',
       name: 'Book',
       component: Book
+    },
+    {
+      path: '/404',
+      name: 'NotFound',
+      component: NotFound
+    },
+    {
+      path: '*',
+      redirect: '/404'
     }
   ]
 })

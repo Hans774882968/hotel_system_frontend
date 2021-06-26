@@ -4,16 +4,16 @@
     <div class="container">
       <p>{{ hid }}</p>
       <div class="hotel_info">
-        <h1 class="hotel_name">{{ hotel_info.name }}</h1>
-        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.address }}</p>
+        <h1 class="hotel_name">{{ hotel_info.hname }}</h1>
+        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.addr }}</p>
         <el-rate v-model="hotel_info.star" disabled></el-rate>
         <div class="hotel_headcontext">
-          <img class="hotel_img" :src="hotel_info.img" :alt="hotel_info.name" />
+          <img class="hotel_img" :src="hotel_info.hpicture" :alt="hotel_info.hname" />
           <div class="map">
             <Map :hotels="[
               {
-                location: hotel_info.location,
-                name: hotel_info.name
+                location: [hotel_info.longitude,hotel_info.latitude],
+                name: hotel_info.hname
               }
             ]"></Map>
           </div>
@@ -100,22 +100,6 @@ export default {
           number: '1003',
           img: '/static/room_img/rm4.png'
         }
-      ],
-      mock_hotels: [
-        {
-          address: '上海',
-          name: '维也纳酒店',
-          star: 3,
-          img: '/static/hotel_img/1.jpg',
-          location: [116.39, 39.6]
-        },
-        {
-          address: '成都',
-          name: '如家酒店',
-          star: 4,
-          img: '/static/hotel_img/2.jpg',
-          location: [104.06, 30.67]
-        }
       ]
     }
   },
@@ -123,17 +107,24 @@ export default {
     this.hid = parseInt(this.$route.params.hid)
   },
   mounted () {
-    this.$axios.get('hotel', {
+    if (Number.isNaN(this.hid)) {
+      this.jump_to_404()
+      return
+    }
+    this.$axios.get('/hotel/gethotel', {
       params: {
         hid: this.hid
       }
     }).then(res => {
-      Object.assign(this.hotel_info, res.hotel_info)
-      Object.assign(this.rooms, res.rooms)
+      if (res.data === '') {
+        this.jump_to_404()
+      } else {
+        this.hotel_info = Object.assign({}, res.data)
+      }
+      // Object.assign(this.rooms, res.rooms)
     }).catch(res => {
-      this.showErr(res)
+      this.showErr(`获取失败：${res}`)
       // dbg
-      Object.assign(this.hotel_info, this.mock_hotels[this.hid - 1])
       for (let item of this.mock_rooms) {
         if (item.hid === this.hid) {
           this.rooms.push(item)
@@ -154,6 +145,13 @@ export default {
         message: msg,
         type: 'success',
         center: true
+      })
+    },
+    jump_to_404 () {
+      this.$router.replace({
+        name: 'NotFound'
+      }).catch(res => {
+        this.showErr(`跳转失败：${res}`)
       })
     },
     jump_to_room (rid) {

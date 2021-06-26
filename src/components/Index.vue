@@ -6,21 +6,45 @@
     <div class="search_form">
       <div class="search_container">
         <div class="search_row">
-          <span>输入地点</span>
+          <span>选择城市</span>
           <div class="row_right">
-            <input v-model="keywords" type="text" name="keywords" class="search_input" placeholder="输入目的地，城市或景点" required="required">
+            <el-select v-model="cur_city" class="row_right" placeholder="选择城市">
+              <el-option-group
+                v-for="group in city_option"
+                :key="group.label"
+                :label="group.label">
+                <el-option
+                  v-for="item in group.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-option-group>
+              <br/>
+            </el-select>
+          </div>
+        </div>
+        <div class="search_row">
+          <span>选择星级</span>
+          <div class="row_right">
+            <el-slider
+              v-model="choose_star"
+              range
+              show-stops
+              :max="5">
+            </el-slider>
           </div>
         </div>
         <div class="search_row">
           <span>入住日期</span>
           <div class="row_right">
-            <input v-model="date_in" type="date" class="search_input" required="required">
+            <input v-model="date_in" type="date" class="search_input" />
           </div>
         </div>
         <div class="search_row">
           <span>退房日期</span>
           <div class="row_right">
-            <input v-model="date_out" type="date" class="search_input" required="required">
+            <input v-model="date_out" type="date" class="search_input" />
           </div>
         </div>
         <div class="search_row">
@@ -50,7 +74,30 @@ export default {
   components: {Navbar},
   data () {
     return {
-      keywords: '',
+      city_option: [
+        {
+          label: '上海',
+          options: [{value: '上海', label: '上海'}]
+        },
+        {
+          label: '北京',
+          options: [{value: '北京', label: '北京'}]
+        },
+        {
+          label: '天津',
+          options: [{value: '天津', label: '天津'}]
+        },
+        {
+          label: '四川',
+          options: [{value: '成都', label: '成都'}, {value: '南充', label: '南充'}, {value: '泸州', label: '泸州'}]
+        },
+        {
+          label: '广西',
+          options: [{value: '桂林', label: '桂林'}, {value: '北海', label: '北海'}, {value: '贺州', label: '贺州'}]
+        }
+      ],
+      cur_city: '',
+      choose_star: [2, 3],
       date_in: '',
       date_out: '',
       person_option: [{
@@ -81,24 +128,46 @@ export default {
         center: true
       })
     },
+    formCheck () {
+      if (!this.cur_city.length) {
+        this.showErr('请选择城市')
+        return false
+      }
+      if (!this.date_in.length) {
+        this.showErr('请选择入住日期')
+        return false
+      }
+      if (!this.date_out.length) {
+        this.showErr('请选择退房日期')
+        return false
+      }
+      if (!this.cur_person_num.length) {
+        this.showErr('请选择入住人数')
+        return false
+      }
+      return true
+    },
     search () {
-      this.$axios.get('/search', {
+      if (!this.formCheck()) return
+      this.showErr({
+        city: this.cur_city,
+        choose_star: this.choose_star,
+        date_in: this.date_in,
+        date_out: this.date_out,
+        person: this.cur_person_num
+      })
+      this.$axios.get('/hotel/search', {
         params: {
-          keywords: this.keywords,
+          city: this.cur_city,
           date_in: this.date_in,
           date_out: this.date_out,
           person: this.cur_person_num
         }
       }).then(res => {
-        this.showSuc(res)
+        let dat = res.data
+        this.showSuc(dat)
       }).catch(res => {
-        // this.showErr('查询失败，请检查网络设置')
-        this.showErr({
-          keywords: this.keywords,
-          date_in: this.date_in,
-          date_out: this.date_out,
-          person: this.cur_person_num
-        })
+        this.showErr(`查询失败：${res}`)
       })
     }
   }
