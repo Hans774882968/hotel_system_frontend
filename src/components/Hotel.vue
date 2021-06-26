@@ -14,11 +14,17 @@
       </div>
       <div class="rooms">
         <div class="room" v-for="(item,idx) in rooms" :key="idx">
-          <p>房间号：{{ item.number }}</p>
-          <p>早餐：{{ item.breakfast }}</p>
-          <p>人数上限：{{ item.people_lim }}</p>
-          <p>￥{{ item.price }}</p>
-          <el-button type="primary" @click="jump_to_room(item.rid)">查看详情</el-button>
+          <div class="left">
+            <img :src="item.img"  class="room_img" />
+          </div>
+          <div class="right">
+            <p>房间号：{{ item.number }}</p>
+            <p>房间类型：{{ item.roomtype }}</p>
+            <p>早餐：{{ item.breakfast }}</p>
+            <p>人数上限：{{ item.people_lim }}</p>
+            <p>￥{{ item.price }}</p>
+            <el-button type="primary" @click="jump_to_room(item.rid)">查看详情</el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -39,10 +45,12 @@ export default {
         {
           rid: 1,
           hid: 1,
+          roomtype: '单人间',
           breakfast: '无',
           people_lim: 1,
           price: 10.9,
-          number: '1001'
+          number: '1001',
+          img: '/static/hotel_img/rm3.png'
         },
         {
           rid: 2,
@@ -50,7 +58,8 @@ export default {
           breakfast: '有',
           people_lim: 3,
           price: 11.9,
-          number: '1002'
+          number: '1002',
+          img: '/static/hotel_img/rm2.png'
         },
         {
           rid: 3,
@@ -172,10 +181,17 @@ div{
 .rooms{
   width: 80%;
   margin-bottom: 1rem;
-  background-color: #f5f7fa;
+  background-color:darkgrey;
 }
 .rooms .room{
-  background-color: white;
+  background-color:white;
   margin-top: 1rem;
+  width: 655px;
+  height: 250px;
+  display: flex;
+}
+.room .room_img{
+  width: 20rem;
+  height: 10rem;
 }
 </style>

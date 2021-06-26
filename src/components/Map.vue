@@ -14,7 +14,7 @@ export default {
     window.onLoad = function () {
       var map = new AMap.Map('container', {
         zoom: 11, // 级别
-        //center: [116.397428, 39.90923], // 中心点坐标
+        // center: [116.397428, 39.90923], // 中心点坐标
         viewMode: '3D'// 使用3D视图
       })
       // 初始化插件
@@ -25,7 +25,7 @@ export default {
       // 点标记
       var marker1 = new AMap.Marker({
         content: "<div style='width: 20px; height:20px;background: red;color: #ff; text-align: center;'>1</div>",
-        position: new AMap.LngLat(104.06,30.67), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        position: new AMap.LngLat(104.06, 30.67), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: '北京'
       })
       var marker2 = new AMap.Marker({
@@ -38,8 +38,8 @@ export default {
         policy: AMap.DrivingPolicy.LEAST_TIME
       })
       var points = [
-        { keyword: '四川大学江安校区',city:'成都' },
-        { keyword: '望江校区',city:'成都' }
+        { keyword: '四川大学江安校区', city: '成都' },
+        { keyword: '望江校区', city: '成都' }
       ]
       driving.search(points, function (status, result) {
         // 未出错时，result即是对应的路线规划方案
