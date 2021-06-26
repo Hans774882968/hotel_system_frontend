@@ -97,10 +97,8 @@ export default {
         this.showErr('请填写email')
         return
       }
-      this.$axios.get('/send_captcha', {
-        params: {
-          email: this.RegisterForm.email
-        }
+      this.$axios.post('/login/getCheckCode', {
+        email: this.RegisterForm.email
       }).then(res => {
         this.$message({
           message: '验证码已发送',
@@ -138,14 +136,15 @@ export default {
     },
     register () {
       if (!this.formCheck()) return
-      this.$axios.get('/register', {
-        params: {
-          email: this.RegisterForm.email,
-          name: this.RegisterForm.name,
-          sex: this.RegisterForm.sex,
-          phone: this.RegisterForm.phone,
-          password: this.RegisterForm.password
-        }
+      // utype默认是10
+      this.$axios.post('/login/userRegist', {
+        email: this.RegisterForm.email,
+        name: this.RegisterForm.name,
+        sex: this.RegisterForm.sex,
+        utype: 10,
+        pnumber: this.RegisterForm.phone,
+        password: this.RegisterForm.password,
+        checkCode: this.RegisterForm.captcha
       }).then(res => {
         let dat = res.data
         if (dat.code === 200) {
@@ -154,11 +153,16 @@ export default {
             type: 'success',
             center: true
           })
+          this.$router.push({
+            path: '/'
+          }).catch(res => {
+            this.showErr(`跳转失败：${res}`)
+          })
         } else {
-          this.showErr('注册失败')
+          this.showErr(dat.msg)
         }
       }).catch(res => {
-        this.showErr('注册失败，请检查网络设置')
+        this.showErr(`注册失败：${res}`)
       })
     }
   }

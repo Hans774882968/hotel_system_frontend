@@ -58,11 +58,9 @@ export default {
     },
     login () {
       if (!this.formCheck()) return
-      this.$axios.get('/login', {
-        params: {
-          email: this.LoginForm.email,
-          password: this.LoginForm.password
-        }
+      this.$axios.post('/login/login', {
+        email: this.LoginForm.email,
+        password: this.LoginForm.password
       }).then(res => {
         let dat = res.data
         if (dat.code === 200) {
@@ -71,11 +69,16 @@ export default {
             type: 'success',
             center: true
           })
+          this.$router.push({
+            path: '/'
+          }).catch(res => {
+            this.showErr(`跳转失败：${res}`)
+          })
         } else {
-          this.showErr('登录失败')
+          this.showErr(dat.msg)
         }
       }).catch(res => {
-        this.showErr('登录失败，请检查网络设置')
+        this.showErr(`登录失败：${res}`)
       })
     }
   }
