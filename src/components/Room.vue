@@ -4,9 +4,11 @@
     <div class="container">
       <p>{{ rid }}</p>
       <div class="room_info">
+        <img :src="room_info.img"  class="room_img" />
         <p>rid：{{ room_info.rid }}</p>
         <p>hid：{{ room_info.hid }}</p>
         <p>房间号：{{ room_info.number }}</p>
+        <p>房间类型：{{ room_info.roomtype }}</p>
         <p>早餐：{{ room_info.breakfast }}</p>
         <p>人数上限：{{ room_info.people_lim }}</p>
         <p>￥{{ room_info.price }}</p>
@@ -82,34 +84,42 @@ export default {
         {
           rid: 1,
           hid: 1,
+          roomtype: '单人间',
           breakfast: '无',
           people_lim: 1,
           price: 10.9,
-          number: '1001'
+          number: '1001',
+          img: '/static/hotel_img/rm1.png'
         },
         {
           rid: 2,
           hid: 1,
+          roomtype: '多人间',
           breakfast: '有',
           people_lim: 3,
           price: 11.9,
-          number: '1002'
+          number: '1002',
+          img: '/static/hotel_img/rm2.png'
         },
         {
           rid: 3,
           hid: 2,
+          roomtype: '单人间',
           breakfast: '有',
           people_lim: 1,
           price: 10.9,
-          number: '3001'
+          number: '3001',
+          img: '/static/hotel_img/rm3.png'
         },
         {
           rid: 4,
           hid: 2,
+          roomtype: '多人间',
           breakfast: '有',
           people_lim: 3,
           price: 11.9,
-          number: '3002'
+          number: '3002',
+          img: '/static/hotel_img/rm4.png'
         }
       ],
       comment_content: ''
@@ -130,7 +140,7 @@ export default {
       this.showErr(res)
       Object.assign(this.room_info, this.mock_rooms[this.rid - 1])
     })
-    this.$axios.get('comments',{
+    this.$axios.get('comments', {
       params: {
         rid: this.rid
       }
@@ -189,6 +199,10 @@ export default {
 <style scoped>
 div{
   box-sizing: border-box;
+}
+.room_img {
+  width: 40rem;
+  height: 25rem;
 }
 .container{
   display: flex;
