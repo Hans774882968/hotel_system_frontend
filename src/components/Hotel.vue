@@ -50,32 +50,47 @@ export default {
           people_lim: 1,
           price: 10.9,
           number: '1001',
-          img: '/static/hotel_img/rm3.png'
+          img: '/static/room_img/rm1.png'
         },
         {
           rid: 2,
           hid: 1,
+          roomtype: '单人间',
           breakfast: '有',
           people_lim: 3,
           price: 11.9,
           number: '1002',
-          img: '/static/hotel_img/rm2.png'
+          img: '/static/room_img/rm2.png'
         },
         {
           rid: 3,
           hid: 2,
+          roomtype: '单人间',
           breakfast: '有',
           people_lim: 1,
           price: 10.9,
-          number: '3001'
+          number: '3001',
+          img: '/static/room_img/rm3.png'
         },
         {
           rid: 4,
           hid: 2,
+          roomtype: '单人间',
           breakfast: '有',
           people_lim: 3,
           price: 11.9,
-          number: '3002'
+          number: '3002',
+          img: '/static/room_img/rm4.png'
+        },
+        {
+          rid: 5,
+          hid: 1,
+          roomtype: '单人间',
+          breakfast: '有',
+          people_lim: 3,
+          price: 12.9,
+          number: '1003',
+          img: '/static/room_img/rm4.png'
         }
       ],
       mock_hotels: [
@@ -182,12 +197,13 @@ div{
   width: 80%;
   margin-bottom: 1rem;
   background-color:darkgrey;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+  padding: 1rem;
 }
 .rooms .room{
   background-color:white;
-  margin-top: 1rem;
-  width: 655px;
-  height: 250px;
   display: flex;
 }
 .room .room_img{
