@@ -5,11 +5,18 @@
       <p>{{ hid }}</p>
       <div class="hotel_info">
         <h1 class="hotel_name">{{ hotel_info.name }}</h1>
-        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.location }}</p>
+        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.address }}</p>
         <el-rate v-model="hotel_info.star" disabled></el-rate>
         <div class="hotel_headcontext">
           <img class="hotel_img" :src="hotel_info.img" :alt="hotel_info.name" />
-          <div class="map">地图</div>
+          <div class="map">
+            <Map :hotels="[
+              {
+                location: hotel_info.location,
+                name: hotel_info.name
+              }
+            ]"></Map>
+          </div>
         </div>
       </div>
       <div class="rooms">
@@ -33,9 +40,10 @@
 
 <script>
 import Navbar from './Navbar'
+import Map from './Map'
 export default {
   name: 'Hotel',
-  components: {Navbar},
+  components: {Navbar, Map},
   data: function () {
     return {
       hid: -1,
@@ -95,16 +103,18 @@ export default {
       ],
       mock_hotels: [
         {
-          location: '上海',
+          address: '上海',
           name: '维也纳酒店',
           star: 3,
-          img: '/static/hotel_img/1.jpg'
+          img: '/static/hotel_img/1.jpg',
+          location: [116.39, 39.6]
         },
         {
-          location: '广州',
+          address: '成都',
           name: '如家酒店',
           star: 4,
-          img: '/static/hotel_img/2.jpg'
+          img: '/static/hotel_img/2.jpg',
+          location: [104.06, 30.67]
         }
       ]
     }

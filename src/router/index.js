@@ -5,7 +5,6 @@ import Login from '../components/Login'
 import Register from '../components/Register'
 import Room from '../components/Room'
 import Hotel from '../components/Hotel'
-import Map from '../components/Map'
 
 Vue.use(Router)
 
@@ -36,11 +35,6 @@ export default new Router({
       path: '/hotel/:hid',
       name: 'Hotel',
       component: Hotel
-    },
-    {
-      path: '/map',
-      name: 'Map',
-      component: Map
     }
   ]
 })
