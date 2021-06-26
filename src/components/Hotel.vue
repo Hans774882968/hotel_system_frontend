@@ -15,6 +15,7 @@
           <p>早餐：{{ item.breakfast }}</p>
           <p>人数上限：{{ item.people_lim }}</p>
           <p>￥{{ item.price }}</p>
+          <el-button type="primary" @click="jump_to_room(item.rid)">查看详情</el-button>
         </div>
       </div>
     </div>
@@ -29,24 +30,40 @@ export default {
   data: function () {
     return {
       hid: -1,
-      hotel_info: {
-        location: '上海',
-        name: '维也纳酒店',
-        star: 3,
-        img: ''
-      },
-      rooms: [
+      hotel_info: {},
+      rooms: [],
+      mock_rooms: [
         {
+          rid: 1,
+          hid: 1,
           breakfast: '无',
           people_lim: 1,
           price: 10.9,
           number: '1001'
         },
         {
+          rid: 2,
+          hid: 1,
           breakfast: '有',
           people_lim: 3,
           price: 11.9,
           number: '1002'
+        },
+        {
+          rid: 3,
+          hid: 2,
+          breakfast: '有',
+          people_lim: 1,
+          price: 10.9,
+          number: '3001'
+        },
+        {
+          rid: 4,
+          hid: 2,
+          breakfast: '有',
+          people_lim: 3,
+          price: 11.9,
+          number: '3002'
         }
       ],
       mock_hotels: [
@@ -69,13 +86,22 @@ export default {
     this.hid = parseInt(this.$route.params.hid)
   },
   mounted () {
-    this.$axios.get(`/hotel?id=${this.hid}`, {
-      params: {}
+    this.$axios.get('hotel', {
+      params: {
+        hid: this.hid
+      }
     }).then(res => {
-      Object.assign(this.hotel_info, res)
+      Object.assign(this.hotel_info, res.hotel_info)
+      Object.assign(this.rooms, res.rooms)
     }).catch(res => {
       this.showErr(res)
+      // dbg
       Object.assign(this.hotel_info, this.mock_hotels[this.hid - 1])
+      for (let item of this.mock_rooms) {
+        if (item.hid === this.hid) {
+          this.rooms.push(item)
+        }
+      }
     })
   },
   methods: {
@@ -91,6 +117,16 @@ export default {
         message: msg,
         type: 'success',
         center: true
+      })
+    },
+    jump_to_room (rid) {
+      this.$router.push({
+        name: 'Room',
+        params: {
+          rid: rid
+        }
+      }).catch(res => {
+        this.showErr('跳转失败')
       })
     }
   }
@@ -119,7 +155,11 @@ div{
 }
 .rooms{
   width: 80%;
+  margin-bottom: 1rem;
+  background-color: #f5f7fa;
+}
+.rooms .room{
   background-color: white;
-  margin: 1rem 0;
+  margin-top: 1rem;
 }
 </style>
