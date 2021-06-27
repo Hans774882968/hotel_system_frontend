@@ -22,18 +22,27 @@
           <!--订单表单-->
           <div class="book_form">
             <div class="date">
-              <div class="search_row">
-                <span>入住日期</span>
-                <div class="row_right">
-                  <input v-model="BookForm.inDate" type="date" class="search_input" />
-                </div>
-              </div>
-              <div class="search_row">
-                <span>退房日期</span>
-                <div class="row_right">
-                  <input v-model="BookForm.outDate" type="date" class="search_input" />
-                </div>
-              </div>
+              <!--<div class="search_row">-->
+                <!--<span>入住日期</span>-->
+                <!--<div class="row_right">-->
+                  <!--<input v-model="BookForm.inDate" type="date" class="search_input" />-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="search_row">-->
+                <!--<span>退房日期</span>-->
+                <!--<div class="row_right">-->
+                  <!--<input v-model="BookForm.outDate" type="date" class="search_input" />-->
+                <!--</div>-->
+              <!--</div>-->
+              <el-date-picker
+                v-model="dateArr"
+                type="daterange"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="入住日期"
+                end-placeholder="退房日期">
+              </el-date-picker>
             </div>
             <div class="guest_info">
               <el-input
@@ -47,10 +56,11 @@
         </div>
         <!--右侧展示价格-->
         <div class="price">
-          <span>1间*1晚</span>
+          <span>1间*{{ day_calc }}晚</span>
+          <p>价格：￥{{ room_info.price }}</p>
           <div>
             <h1>应付总额</h1>
-            <span>{{ room_info.price }}</span>
+            <span>￥{{ room_info.price * day_calc }}</span>
           </div>
         </div>
       </div>
@@ -67,6 +77,7 @@ export default {
     return {
       rid: -1,
       room_info: {},
+      dateArr: '',
       BookForm: {
         custName: '',
         inDate: '',
@@ -100,6 +111,13 @@ export default {
       this.showErr(`获取房间信息失败：${res}`)
     })
   },
+  computed: {
+    day_calc () {
+      let res = (new Date(this.dateArr[1]) - new Date(this.dateArr[0])) / 86400000
+      if (Number.isNaN(res)) return 0
+      return res
+    }
+  },
   methods: {
     showErr (msg) {
       this.$message({
@@ -123,6 +141,7 @@ export default {
       })
     },
     submit_dingdan () {
+      [this.BookForm.inDate, this.BookForm.outDate] = this.dateArr
       this.$axios.post('/dingdan/order', this.BookForm).then(res => {
         let dat = res.data
         if (dat === '下单成功') {
