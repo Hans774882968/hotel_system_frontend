@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="search_row">
-          <span>选择星级</span>
+          <span>星级范围</span>
           <div class="row_right">
             <el-slider
               v-model="choose_star"

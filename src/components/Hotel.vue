@@ -2,11 +2,12 @@
   <div>
     <Navbar></Navbar>
     <div class="container">
-      <p>{{ hid }}</p>
       <div class="hotel_info">
-        <h1 class="hotel_name">{{ hotel_info.hname }}</h1>
-        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.addr }}</p>
-        <el-rate v-model="hotel_info.star" disabled></el-rate>
+        <div class="hotel_title">
+          <h1 class="hotel_name">{{ hotel_info.hname }}</h1>
+          <p class="addr"><el-icon class="el-icon-location"></el-icon>&nbsp;{{ hotel_info.addr }}</p>
+          <el-rate v-model="hotel_info.star" disabled></el-rate>
+        </div>
         <div class="hotel_headcontext">
           <img class="hotel_img" :src="hotel_info.hpicture" :alt="hotel_info.hname" />
           <div class="map">
@@ -21,16 +22,20 @@
       </div>
       <div class="rooms">
         <div class="room" v-for="(item,idx) in rooms" :key="idx">
-          <div class="left">
+          <div class="thumbnail">
             <img :src="item.img"  class="room_img" />
+            <div class="roomtype"><span>{{ item.roomtype }}</span></div>
           </div>
-          <div class="right">
-            <p>房间号：{{ item.number }}</p>
-            <p>房间类型：{{ item.roomtype }}</p>
-            <p>早餐：{{ item.breakfast }}</p>
-            <p>人数上限：{{ item.people_lim }}</p>
-            <p>￥{{ item.price }}</p>
-            <el-button type="primary" @click="jump_to_room(item.rid)">查看详情</el-button>
+          <div class="room_card">
+            <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ item.number }}</span>
+            <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ item.breakfast }}</span>
+            <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ item.people_lim }}</span>
+          </div>
+          <div class="price_card">
+            <span class="price_font">￥{{ item.price }}</span>
+            <div>
+              <el-button type="primary" @click="jump_to_room(item.rid)">查看详情</el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -116,20 +121,15 @@ export default {
         hid: this.hid
       }
     }).then(res => {
-      if (res.data === '') {
+      let dat = res.data
+      if (dat === '') {
         this.jump_to_404()
-      } else {
-        this.hotel_info = Object.assign({}, res.data)
+        return
       }
-      // Object.assign(this.rooms, res.rooms)
+      this.hotel_info = Object.assign({}, dat.hotel)
+      this.rooms = dat.rooms.slice()
     }).catch(res => {
       this.showErr(`获取失败：${res}`)
-      // dbg
-      for (let item of this.mock_rooms) {
-        if (item.hid === this.hid) {
-          this.rooms.push(item)
-        }
-      }
     })
   },
   methods: {
@@ -184,9 +184,16 @@ div{
   background-color: white;
   margin: 1rem 0;
 }
-.hotel_info .hotel_name{
+.hotel_info .hotel_title{
+  padding-left: 1rem;
+  text-align: left;
+}
+.hotel_title .hotel_name{
   color: #0f294d;
-  font-size: 20px;
+  font-size: 24px;
+}
+.hotel_title .addr{
+  font-weight: 600;
 }
 .hotel_info .hotel_headcontext{
   display: flex;
@@ -204,18 +211,53 @@ div{
 .rooms{
   width: 80%;
   margin-bottom: 1rem;
-  background-color:darkgrey;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
-  padding: 1rem;
 }
 .rooms .room{
   background-color:white;
   display: flex;
+  padding: 1rem;
+}
+.room .thumbnail{
+  border-right: 1px solid #dadfe6;
+  width: 9rem;
+  display: flex;
+  flex-direction: column;
+}
+.thumbnail .roomtype{
+  width: 8rem;
+  font-weight: 600;
+  color: #0f294d;
+  padding: 0.5rem 0;
+  text-align: left;
 }
 .room .room_img{
-  width: 20rem;
-  height: 10rem;
+  width: 8rem;
+  height: 6rem;
+}
+.room .room_card{
+  border-right: 1px solid #dadfe6;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.room_card .tag{
+  text-align: left;
+  margin-bottom: 0.4rem;
+}
+.room .price_card {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.price_card .price_font{
+  line-height: 40px;
+  color: #287dfa;
+  font-size: 24px;
+  font-weight: 600;
+  margin-right: 1rem;
 }
 </style>

@@ -2,18 +2,45 @@
   <div>
     <Navbar></Navbar>
     <div class="container">
-      <p>{{ rid }}</p>
+      <div class="top_menu">
+        <router-link v-if="room_info.hasOwnProperty('hotel')" :to="'/hotel/'+room_info.hotel.hid">
+          {{ room_info.hotel.hname }}
+        </router-link>
+        &nbsp;>>&nbsp;
+        <router-link :to="this.$route.path">{{ room_info.roomtype }}</router-link>
+      </div>
       <div class="room_info">
-        <img :src="room_info.img"  class="room_img" />
-        <p>rid：{{ room_info.rid }}</p>
-        <p>hid：{{ room_info.hid }}</p>
-        <p>房间号：{{ room_info.number }}</p>
-        <p>房间类型：{{ room_info.roomtype }}</p>
-        <p>早餐：{{ room_info.breakfast }}</p>
-        <p>人数上限：{{ room_info.people_lim }}</p>
-        <p>￥{{ room_info.price }}</p>
+        <div class="room_left">
+          <h2 class="room_title">{{ room_info.roomtype }}</h2>
+          <img :src="room_info.img"  class="room_img" />
+        </div>
+        <div class="room_right">
+          <h2 class="room_title">基本信息</h2>
+          <div class="base">
+            <span class="tag">&nbsp;rid：{{ room_info.rid }}</span>
+            <span class="tag">&nbsp;hid：{{ room_info.hid }}</span>
+            <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.number }}</span>
+            <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.breakfast }}</span>
+            <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ room_info.people_lim }}</span>
+            <span class="tag"><i class="fa fa-money"></i>&nbsp;￥{{ room_info.price }}</span>
+          </div>
+          <h2 class="room_title">客房详情</h2>
+          <div class="facilities">
+            <span class="tag"><i class="fa fa-bed"></i>&nbsp;1张特大床</span>
+            <span class="tag"><el-icon class="el-icon-s-home"></el-icon>&nbsp;36平方米</span>
+            <span class="tag"><i class="fa fa-wifi"></i>&nbsp;免费WiFi</span>
+            <span class="tag"><i class="fa fa-television"></i>&nbsp;液晶电视</span>
+            <span class="tag"><i class="fa fa-columns"></i>&nbsp;独立卫生间</span>
+            <span class="tag"><i class="fa fa-ban"></i>&nbsp;无烟客房</span>
+          </div>
+          <div class="bottom_info">
+            <span class="bottom_font">￥{{ room_info.price }}</span>
+            <el-button type="primary" @click="jump_to_book">预订</el-button>
+          </div>
+        </div>
       </div>
       <div class="comment_form">
+        <h3 class="comment_form_title">评价该房间</h3>
         <el-input
           type="textarea"
           class="content"
@@ -30,7 +57,7 @@
             <p class="nickname">{{ item.nickname }}</p>
           </div>
           <div class="right text-wrap">
-            {{ item.content }}
+            <span>{{ item.content }}</span>
           </div>
         </div>
       </div>
@@ -65,11 +92,12 @@ export default {
         rid: this.rid
       }
     }).then(res => {
-      if (res.data === '') {
+      let dat = res.data
+      if (dat === '') {
         this.jump_to_404()
-      } else {
-        this.room_info = Object.assign({}, res.data)
+        return
       }
+      this.room_info = Object.assign({}, dat)
     }).catch(res => {
       this.showErr(`获取房间信息失败：${res}`)
     })
@@ -110,6 +138,20 @@ export default {
         this.showErr(`404页面跳转失败：${res}`)
       })
     },
+    jump_to_book () {
+      this.$router.push({
+        name: 'Book'
+      }).catch(res => {
+        this.showErr(`下单页面跳转失败：${res}`)
+      })
+    },
+    jump_to_login () {
+      this.$router.push({
+        name: 'Login'
+      }).catch(res => {
+        this.showErr(`登录页面跳转失败：${res}`)
+      })
+    },
     submit_comment () {
       if (!this.comment_content.length) {
         this.showErr('请填写评论')
@@ -120,6 +162,10 @@ export default {
       }).then(res => {
         if (res.status !== 200) {
           this.showErr(`发表评论失败：${res}`)
+          return
+        }
+        if (res.data.code !== 200) {
+          this.jump_to_login()
           return
         }
         this.showSuc('发表评论成功')
@@ -140,9 +186,9 @@ export default {
 div{
   box-sizing: border-box;
 }
-.room_img {
-  width: 40rem;
-  height: 25rem;
+a{
+  text-decoration: none;
+  color: #287dfa;
 }
 .container{
   display: flex;
@@ -151,21 +197,87 @@ div{
   background-color: #f5f7fa;
   min-height: 100vh;
 }
-.room_info{
+.top_menu{
   width: 80%;
   background-color: white;
   margin: 1rem 0;
+  padding: 1rem;
+  text-align: left;
+}
+.room_info{
+  width: 80%;
+  background-color: white;
+  display: flex;
+  padding-bottom: 1rem;
+}
+.room_info .room_left{
+  flex: 1.2;
+  margin: 0 1rem;
+}
+.room_left .room_title{
+  padding: 0;
+  margin: 1rem 0;
+  text-align: left;
+}
+.room_left .room_img {
+  width: 100%;
+}
+.room_info .room_right{
+  flex: 1;
+  overflow: hidden;
+}
+.room_right .room_title{
+  margin: 1rem 0;
+  padding: 0 1rem;
+  text-align: left;
+}
+.room_right .base,.room_right .facilities{
+  width: 100%;
+  padding: 0 1rem;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+.room_right .tag{
+  text-align: left;
+}
+.room_right .bottom_info{
+  text-align: left;
+  margin: 2rem 1rem 0 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.bottom_info *{
+  margin-right: 2rem;
+}
+.bottom_info .bottom_font{
+  line-height: 40px;
+  color: #287dfa;
+  font-size: 24px;
+  font-weight: 600;
 }
 .comment_form{
   width: 80%;
   background-color: white;
   margin: 1rem 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.comment_form_title{
+  text-align: left;
+  margin-top: 0;
 }
 .comment_form .content{
-  width: 70%;
+  width: 90%;
+  font-size: 20px;
+}
+.comment_form .content >>> .el-textarea__inner{
+  height: 10rem;
 }
 .comment_form .submit_btn{
-  width: 70%;
+  width: 10%;
+  margin-top: 1rem;
 }
 .comments{
   width: 80%;
