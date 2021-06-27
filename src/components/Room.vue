@@ -46,123 +46,46 @@ export default {
   data: function () {
     return {
       rid: -1,
-      room_info: {rid: -1},
+      room_info: {},
       comments: [],
-      mock_comments: [
-        {
-          rid: 1,
-          email: '10001@qq.com',
-          nickname: '用户1',
-          content: '1\n很舒服\n很舒服'
-        },
-        {
-          rid: 2,
-          email: '10002@qq.com',
-          nickname: '用户2',
-          content: '2\n不好'
-        },
-        {
-          rid: 3,
-          email: '10002@qq.com',
-          nickname: '用户2',
-          content: '3\n不好'
-        },
-        {
-          rid: 4,
-          email: '10002@qq.com',
-          nickname: '用户2',
-          content: '4\n不好'
-        },
-        {
-          rid: 1,
-          email: '10002@qq.com',
-          nickname: '用户2',
-          content: '5\n不好'
-        }
-      ],
-      mock_rooms: [
-        {
-          rid: 1,
-          hid: 1,
-          roomtype: '单人间',
-          breakfast: '无',
-          people_lim: 1,
-          price: 10.9,
-          number: '1001',
-          img: '/static/room_img/rm1.png'
-        },
-        {
-          rid: 2,
-          hid: 1,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 3,
-          price: 11.9,
-          number: '1002',
-          img: '/static/room_img/rm2.png'
-        },
-        {
-          rid: 3,
-          hid: 2,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 1,
-          price: 10.9,
-          number: '3001',
-          img: '/static/room_img/rm3.png'
-        },
-        {
-          rid: 4,
-          hid: 2,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 3,
-          price: 11.9,
-          number: '3002',
-          img: '/static/room_img/rm4.png'
-        },
-        {
-          rid: 5,
-          hid: 1,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 3,
-          price: 12.9,
-          number: '1003',
-          img: '/static/room_img/rm4.png'
-        }
-      ],
       comment_content: ''
     }
   },
   created () {
-    this.hid = parseInt(this.$route.params.hid)
     this.rid = parseInt(this.$route.params.rid)
   },
   mounted () {
-    this.$axios.get('/room', {
+    if (Number.isNaN(this.rid)) {
+      this.jump_to_404()
+      return
+    }
+    // 获取房间
+    this.$axios.get('/room/getroom', {
       params: {
         rid: this.rid
       }
     }).then(res => {
-      Object.assign(this.room_info, res)
+      if (res.data === '') {
+        this.jump_to_404()
+      } else {
+        this.room_info = Object.assign({}, res.data)
+      }
     }).catch(res => {
-      this.showErr(res)
-      Object.assign(this.room_info, this.mock_rooms[this.rid - 1])
+      this.showErr(`获取房间信息失败：${res}`)
     })
-    this.$axios.get('comments', {
+    // 获取评论
+    this.$axios.get('/rcomment/rcomment', {
       params: {
         rid: this.rid
       }
     }).then(res => {
-      this.comments = JSON.parse(res).slice()
-    }).catch(res => {
-      this.showErr('获取评论失败，请检查网络设置')
-      for (let item of this.mock_comments) {
-        if (item.rid === this.rid) {
-          this.comments.push(item)
-        }
+      if (res.data === '') {
+        this.jump_to_404()
+      } else {
+        this.comments = res.data.slice()
       }
+    }).catch(res => {
+      this.showErr(`获取评论失败：${res}`)
     })
   },
   methods: {
@@ -180,26 +103,33 @@ export default {
         center: true
       })
     },
+    jump_to_404 () {
+      this.$router.replace({
+        name: 'NotFound'
+      }).catch(res => {
+        this.showErr(`404页面跳转失败：${res}`)
+      })
+    },
     submit_comment () {
       if (!this.comment_content.length) {
         this.showErr('请填写评论')
         return
       }
-      this.$axios.post(`/new_comment?id=${this.rid}`, {
-        params: {}
+      this.$axios.post(`/rcomment/new_comment`, {
+        id: this.rid
       }).then(res => {
-        this.comments.splice(0, 0, {
-          email: '777',
-          nickname: '888',
-          content: this.comment_content
-        })
-      }).catch(res => {
-        this.showErr('发送评论失败，请检查网络设置')
+        if (res.status !== 200) {
+          this.showErr(`发表评论失败：${res}`)
+          return
+        }
+        this.showSuc('发表评论成功')
         this.comments.splice(0, 0, {
           email: '10005@qq.com',
           nickname: '888',
           content: this.comment_content
         })
+      }).catch(res => {
+        this.showErr(`发表评论失败：${res}`)
       })
     }
   }

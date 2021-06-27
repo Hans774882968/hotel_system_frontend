@@ -151,7 +151,7 @@ export default {
       this.$router.replace({
         name: 'NotFound'
       }).catch(res => {
-        this.showErr(`跳转失败：${res}`)
+        this.showErr(`404页面跳转失败：${res}`)
       })
     },
     jump_to_room (rid) {

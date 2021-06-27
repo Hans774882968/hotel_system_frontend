@@ -8,7 +8,7 @@
         <div class="search_row">
           <span>选择城市</span>
           <div class="row_right">
-            <el-select v-model="cur_city" class="row_right" placeholder="选择城市">
+            <el-select filterable v-model="cur_city" class="row_right" placeholder="选择城市">
               <el-option-group
                 v-for="group in city_option"
                 :key="group.label"
@@ -64,37 +64,72 @@
         </div>
       </div>
     </div>
+    <!--搜索结果-->
+    <div v-if="search_suc">
+      <div class="hotel_info">
+        <h1 class="hotel_name">{{ hotel_info.hname }}</h1>
+        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.addr }}</p>
+        <el-rate v-model="hotel_info.star" disabled></el-rate>
+        <div class="hotel_headcontext">
+          <img class="hotel_img" :src="hotel_info.hpicture" :alt="hotel_info.hname" />
+          <div class="map">
+            <Map :hotels="[
+              {
+                location: [hotel_info.longitude,hotel_info.latitude],
+                name: hotel_info.hname
+              }
+            ]"></Map>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Navbar from './Navbar'
+function Province (name, arr) {
+  this.label = name
+  this.options = []
+  for (let x of arr) {
+    this.options.push({value: x, label: x})
+  }
+}
 export default {
   name: 'Index',
   components: {Navbar},
   data () {
     return {
       city_option: [
-        {
-          label: '上海',
-          options: [{value: '上海', label: '上海'}]
-        },
-        {
-          label: '北京',
-          options: [{value: '北京', label: '北京'}]
-        },
-        {
-          label: '天津',
-          options: [{value: '天津', label: '天津'}]
-        },
-        {
-          label: '四川',
-          options: [{value: '成都', label: '成都'}, {value: '南充', label: '南充'}, {value: '泸州', label: '泸州'}]
-        },
-        {
-          label: '广西',
-          options: [{value: '桂林', label: '桂林'}, {value: '北海', label: '北海'}, {value: '贺州', label: '贺州'}]
-        }
+        new Province('上海', ['上海']),
+        new Province('北京', ['北京']),
+        new Province('天津', ['天津']),
+        new Province('河北', ['石家庄', '唐山', '秦皇岛']),
+        new Province('山西', ['太原']),
+        new Province('内蒙古', ['呼和浩特', '包头']),
+        new Province('辽宁', ['沈阳', '大连', '丹东', '锦州']),
+        new Province('吉林', ['长春', '牡丹江']),
+        new Province('黑龙江', ['哈尔滨']),
+        new Province('江苏', ['南京', '无锡', '扬州', '徐州']),
+        new Province('浙江', ['杭州', '宁波', '温州', '金华']),
+        new Province('安徽', ['合肥', '蚌埠', '安庆']),
+        new Province('福建', ['福州', '厦门', '泉州']),
+        new Province('江西', ['南昌', '九江', '赣州']),
+        new Province('山东', ['济南', '青岛', '烟台', '济宁']),
+        new Province('河南', ['郑州', '洛阳', '平顶山']),
+        new Province('湖北', ['武汉', '宜昌', '襄樊']),
+        new Province('湖南', ['长沙', '岳阳', '常德']),
+        new Province('广东', ['广州', '深圳', '惠州', '湛江', '韶关']),
+        new Province('广西', ['南宁', '桂林', '北海']),
+        new Province('海南', ['海口']),
+        new Province('四川', ['成都', '泸州', '南充']),
+        new Province('贵州', ['贵阳', '遵义']),
+        new Province('云南', ['昆明', '大理']),
+        new Province('陕西', ['西安']),
+        new Province('甘肃', ['兰州']),
+        new Province('青海', ['西宁']),
+        new Province('宁夏', ['银川']),
+        new Province('新疆', ['乌鲁木齐'])
       ],
       cur_city: '',
       choose_star: [2, 3],
@@ -110,7 +145,9 @@ export default {
         value: '3',
         label: '3人'
       }],
-      cur_person_num: ''
+      cur_person_num: '',
+      search_suc: false,
+      hotel_info: {}
     }
   },
   methods: {
@@ -159,6 +196,7 @@ export default {
       this.$axios.get('/hotel/search', {
         params: {
           city: this.cur_city,
+          choose_star: this.choose_star,
           date_in: this.date_in,
           date_out: this.date_out,
           person: this.cur_person_num
@@ -166,6 +204,7 @@ export default {
       }).then(res => {
         let dat = res.data
         this.showSuc(dat)
+        this.search_suc = true
       }).catch(res => {
         this.showErr(`查询失败：${res}`)
       })
