@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <Navbar/>
-    <h4>欢迎使用</h4>
-    <div><h1 class="center">酒店辅助订购系统</h1></div>
+    <!--<div><h1 class="center">酒店辅助订购系统</h1></div>-->
     <div class="search_form">
       <div class="search_container">
         <div class="search_row">
@@ -65,22 +64,21 @@
       </div>
     </div>
     <!--搜索结果-->
-    <div v-if="search_suc">
-      <div class="hotel_info">
-        <h1 class="hotel_name">{{ hotel_info.hname }}</h1>
-        <p><el-icon class="el-icon-location"></el-icon>{{ hotel_info.addr }}</p>
-        <el-rate v-model="hotel_info.star" disabled></el-rate>
-        <div class="hotel_headcontext">
-          <img class="hotel_img" :src="hotel_info.hpicture" :alt="hotel_info.hname" />
-          <div class="map">
-            <Map :hotels="[
-              {
-                location: [hotel_info.longitude,hotel_info.latitude],
-                name: hotel_info.hname
-              }
-            ]"></Map>
-          </div>
-        </div>
+    <div class="search_result">
+      <!--搜索结果：列表-->
+      <div class="hotel_list">
+        <el-tabs v-model="choosed_order">
+          <el-tab-pane label="按星级排序" name="1">
+            <HotelList :hotels="this.hotels_star"></HotelList>
+          </el-tab-pane>
+          <el-tab-pane label="按距离排序" name="2">
+            <HotelList :hotels="this.hotels_dis"></HotelList>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <!--搜索结果：地图-->
+      <div class="hotel_map">
+        <Map :hotels="this.map_dis"></Map>
       </div>
     </div>
   </div>
@@ -88,6 +86,8 @@
 
 <script>
 import Navbar from './Navbar'
+import Map from './Map'
+import HotelList from './HotelList'
 function Province (name, arr) {
   this.label = name
   this.options = []
@@ -97,7 +97,7 @@ function Province (name, arr) {
 }
 export default {
   name: 'Index',
-  components: {Navbar},
+  components: {HotelList, Navbar, Map},
   data () {
     return {
       city_option: [
@@ -147,8 +147,47 @@ export default {
       }],
       cur_person_num: '',
       search_suc: false,
-      hotel_info: {}
+      choosed_order: '1',
+      hotels_star: [],
+      hotels_dis: [],
+      map_dis: [],
+      ns: [], // n=经度，s=纬度
+      hotels: [
+        {
+          hid: 1,
+          addr: '中国，上海，延安西路1303号',
+          hname: '如家酒店·neo',
+          star: 2,
+          hpicture: '/static/hotel_img/1.jpg',
+          longitude: 121.435224,
+          latitude: 31.216201
+        },
+        {
+          hid: 2,
+          addr: '中国，上海，沪青平公路1209号',
+          hname: '维也纳酒店(上海虹桥国家会展中心店)',
+          star: 3,
+          hpicture: '/static/hotel_img/2.jpg',
+          longitude: 121.332638,
+          latitude: 31.174264
+        },
+        {
+          hid: 3,
+          addr: '中国，四川，成都，滨江中路9号',
+          hname: '成都万达瑞华酒店',
+          star: 5,
+          hpicture: '/static/hotel_img/3.jpg',
+          longitude: 104.076177,
+          latitude: 30.653319
+        }
+      ]
     }
+  },
+  // dbg
+  mounted () {
+    this.get_map_dis()
+    this.get_hotels_star()
+    this.get_hotels_dis()
   },
   methods: {
     showErr (msg) {
@@ -186,28 +225,52 @@ export default {
     },
     search () {
       if (!this.formCheck()) return
-      this.showErr({
+      // this.showErr({
+      //   city: this.cur_city,
+      //   choose_star: this.choose_star,
+      //   date_in: this.date_in,
+      //   date_out: this.date_out,
+      //   person: this.cur_person_num
+      // })
+      this.$axios.post(`/hotel/fliter/${this.cur_city}/${this.choose_star[0]}/${this.date_in}/${this.date_out}/${this.cur_person_num}`, {
         city: this.cur_city,
         choose_star: this.choose_star,
         date_in: this.date_in,
         date_out: this.date_out,
         person: this.cur_person_num
-      })
-      this.$axios.get('/hotel/search', {
-        params: {
-          city: this.cur_city,
-          choose_star: this.choose_star,
-          date_in: this.date_in,
-          date_out: this.date_out,
-          person: this.cur_person_num
-        }
       }).then(res => {
         let dat = res.data
         this.showSuc(dat)
         this.search_suc = true
+        // dat.cityns
       }).catch(res => {
         this.showErr(`查询失败：${res}`)
       })
+    },
+    get_hotels_star () {
+      this.hotels_star = this.hotels.slice()
+      this.hotels_star.sort(function (x, y) {
+        return y.star - x.star
+      })
+    },
+    get_hotels_dis () {
+      this.hotels_dis = this.hotels.slice()
+      this.hotels_dis.sort(function (x, y) {
+        return x.star - y.star
+      })
+    },
+    get_map_dis () {
+      this.map_dis = this.hotels.slice()
+      this.map_dis.sort(function (x, y) {
+        return x.star - y.star
+      })
+      this.map_dis.reverse()
+      for (let i = 0; i < this.map_dis.length; ++i) {
+        this.map_dis[i] = {
+          location: [this.map_dis[i].longitude, this.map_dis[i].latitude],
+          name: this.map_dis[i].hname
+        }
+      }
     }
   }
 }
@@ -217,6 +280,7 @@ export default {
 .search_form {
   display: flex;
   justify-content: center;
+  margin-top: 2rem;
 }
 .search_container{
   display: flex;
@@ -274,6 +338,30 @@ export default {
   font-weight: 500;
   color: #FFFFFF;
 }
+.search_result{
+  width: 80%;
+  margin-left: calc((100% - 80%) / 2);
+  margin-top: 2rem;
+  display: flex;
+}
+/*搜索结果：列表*/
+.hotel_list{
+  flex: 1.6;
+  margin-right: 1rem;
+}
+/*tab栏美化*/
+.hotel_list >>> .el-tabs__header{
+  background-color: white;
+  padding: 1rem;
+}
+/*搜索结果：地图*/
+.hotel_map{
+  flex: 1;
+  height: 26rem;
+  position: sticky;
+  top: 1rem;
+}
+/*通用*/
 div {
   display: block;
   position: relative;
@@ -282,12 +370,13 @@ div {
   box-sizing: border-box;
 }
 .container{
-  height: 100vh;
-  background-image: url("/static/bg.png");
+  /*background-image: url("/static/bg.png");*/
+  background-color: #f5f7fa;
+  padding-bottom: 2rem;
 }
-.center{
-  text-align: center;
-  font-feature-settings: normal;
-  font-size: 60px;
-}
+/*.center{*/
+  /*text-align: center;*/
+  /*font-feature-settings: normal;*/
+  /*font-size: 60px;*/
+/*}*/
 </style>

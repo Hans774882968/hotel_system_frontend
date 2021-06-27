@@ -158,6 +158,14 @@ function paramsURL (url) {
   return res
 }
 
+// 这个fliter页面的请求参数不知道怎么模拟出来……
+Mock.mock(RegExp('/hotel/fliter' + '.*'), 'post', (options) => {
+  return {
+    ns: [116.41667, 39.91667],
+    hotels: hotels
+  }
+})
+
 Mock.mock(RegExp('/hotel/gethotel' + '.*'), 'get', (options) => {
   let hid = parseInt(paramsURL(options.url)['hid'])
   if (hid > hotels.length) return ''
