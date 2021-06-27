@@ -14,7 +14,7 @@
                 v-model="RegisterForm.name"
                 type="text"
                 name="name"
-                placeholder="姓名"
+                placeholder="用户名"
                 maxlength="10"
                 show-word-limit />
       <div class="field">
@@ -117,7 +117,7 @@ export default {
         return false
       }
       if (!this.RegisterForm.name.length) {
-        this.showErr('请填写姓名')
+        this.showErr('请填写用户名')
         return false
       }
       if (!this.RegisterForm.phone.length) {

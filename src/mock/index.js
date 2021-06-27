@@ -193,3 +193,14 @@ Mock.mock(RegExp('/rcomment/new_comment' + '.*'), 'post', (options) => {
   if (Random.boolean()) return {code: 200, msg: '评论成功'}
   return {code: 301, msg: '请先登录'}
 })
+
+Mock.mock(RegExp('/dingdan/order' + '.*'), 'post', (options) => {
+  let rid = parseInt(paramsURL(options.url)['rid'])
+  let res = []
+  for (let c of comments) {
+    if (c.rid === rid) {
+      res.push(c)
+    }
+  }
+  return res
+})

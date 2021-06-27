@@ -53,59 +53,7 @@ export default {
     return {
       hid: -1,
       hotel_info: {},
-      rooms: [],
-      mock_rooms: [
-        {
-          rid: 1,
-          hid: 1,
-          roomtype: '单人间',
-          breakfast: '无',
-          people_lim: 1,
-          price: 10.9,
-          number: '1001',
-          img: '/static/room_img/rm1.png'
-        },
-        {
-          rid: 2,
-          hid: 1,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 3,
-          price: 11.9,
-          number: '1002',
-          img: '/static/room_img/rm2.png'
-        },
-        {
-          rid: 3,
-          hid: 2,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 1,
-          price: 10.9,
-          number: '3001',
-          img: '/static/room_img/rm3.png'
-        },
-        {
-          rid: 4,
-          hid: 2,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 3,
-          price: 11.9,
-          number: '3002',
-          img: '/static/room_img/rm4.png'
-        },
-        {
-          rid: 5,
-          hid: 1,
-          roomtype: '单人间',
-          breakfast: '有',
-          people_lim: 3,
-          price: 12.9,
-          number: '1003',
-          img: '/static/room_img/rm4.png'
-        }
-      ]
+      rooms: []
     }
   },
   created () {
@@ -161,7 +109,7 @@ export default {
           rid: rid
         }
       }).catch(res => {
-        this.showErr('跳转失败')
+        this.showErr(`房间页面跳转失败：${res}`)
       })
     }
   }

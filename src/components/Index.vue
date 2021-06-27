@@ -2,7 +2,7 @@
   <div class="container">
     <Navbar/>
     <h4>欢迎使用</h4>
-    <div><h1 class="center">酒店辅助管理系统</h1></div>
+    <div><h1 class="center">酒店辅助订购系统</h1></div>
     <div class="search_form">
       <div class="search_container">
         <div class="search_row">
