@@ -8,7 +8,7 @@
             <h1 class="hotel_name">{{ room_info.hotel.hname }}</h1>
             <p class="addr"><el-icon class="el-icon-location"></el-icon>&nbsp;{{ room_info.hotel.addr }}</p>
             <el-rate v-model="room_info.hotel.star" disabled></el-rate>
-            <h2 class="room_title">{{ room_info.roomtype }}</h2>
+            <h2 style="font-size: 20px" class="room_title">{{ room_info.roomtype }}</h2>
             <div class="room_base_info">
               <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.number }}</span>
               <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.breakfast }}</span>
@@ -22,18 +22,7 @@
           <!--订单表单-->
           <div class="book_form">
             <div class="date">
-              <!--<div class="search_row">-->
-                <!--<span>入住日期</span>-->
-                <!--<div class="row_right">-->
-                  <!--<input v-model="BookForm.inDate" type="date" class="search_input" />-->
-                <!--</div>-->
-              <!--</div>-->
-              <!--<div class="search_row">-->
-                <!--<span>退房日期</span>-->
-                <!--<div class="row_right">-->
-                  <!--<input v-model="BookForm.outDate" type="date" class="search_input" />-->
-                <!--</div>-->
-              <!--</div>-->
+              <span class="tag">选择日期</span>
               <el-date-picker
                 v-model="dateArr"
                 type="daterange"
@@ -45,22 +34,36 @@
               </el-date-picker>
             </div>
             <div class="guest_info">
+              <span class="tag">住客姓名</span>
               <el-input
+                class="name"
                 v-model="BookForm.custName"
                 placeholder="住客姓名" />
-              <el-input
+              <span class="tag">入住人数</span>
+              <el-input-number
                 v-model="BookForm.custNum"
-                placeholder="住客人数" />
+                :step="1"
+                :min="1"
+                :max="room_info.people_lim"
+                step-strictly>
+              </el-input-number>
             </div>
+            <el-button
+              class="btn"
+              type="primary">
+              确认订单
+            </el-button>
           </div>
         </div>
         <!--右侧展示价格-->
         <div class="price">
-          <span>1间*{{ day_calc }}晚</span>
-          <p>价格：￥{{ room_info.price }}</p>
-          <div>
-            <h1>应付总额</h1>
-            <span>￥{{ room_info.price * day_calc }}</span>
+          <div class="price_row">
+            <span>1间*{{ day_calc }}晚</span>
+            <span>单价：￥{{ room_info.price }}</span>
+          </div>
+          <div class="price_row">
+            <h2>应付总额</h2>
+            <h2 class="price_font">￥{{ (room_info.price * day_calc).toFixed(2) }}</h2>
           </div>
         </div>
       </div>
@@ -183,7 +186,7 @@ div{
 .book_info{
   flex: 1;
   background-color: white;
-  padding: 0 1rem 1rem 1rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   text-align: left;
 }
 .book_info .hotel_name{
@@ -213,11 +216,26 @@ div{
 .book_form .date{
   display: flex;
 }
+.book_form .name{
+  width: 40%;
+}
+.book_form .tag{
+  margin: 0 1rem;
+  font-weight: bold;
+  line-height: 40px;/*与饿了么组件等高*/
+}
 .date .search_row{
   display: flex;
   justify-content: center;
   margin: 0.75rem 0;
   font-size: 14px;
+}
+.book_form .guest_info{
+  margin-top: 1rem;
+  display: flex;
+}
+.book_form .btn{
+  margin-top: 1rem;
 }
 /*右侧展示价格*/
 .price{
@@ -226,5 +244,14 @@ div{
   background-color: white;
   position: sticky;
   top: 1rem;
+  padding: 1.5rem;
+}
+.price .price_row{
+  display: flex;
+  justify-content: space-between;
+}
+.price_font{
+  color: #287dfa;
+  font-weight: 600;
 }
 </style>
