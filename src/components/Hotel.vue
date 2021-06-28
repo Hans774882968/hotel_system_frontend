@@ -11,28 +11,23 @@
         <div class="hotel_headcontext">
           <img class="hotel_img" :src="hotel_info.hpicture" :alt="hotel_info.hname" />
           <div class="map">
-            <Map :hotels="[
-              {
-                location: [hotel_info.longitude,hotel_info.latitude],
-                name: hotel_info.hname
-              }
-            ]"></Map>
+            <Map :hotels="map_dis"></Map>
           </div>
         </div>
       </div>
       <div class="rooms">
         <div class="room" v-for="(item,idx) in rooms" :key="idx">
           <div class="thumbnail">
-            <img :src="item.img"  class="room_img" />
-            <div class="roomtype"><span>{{ item.roomtype }}</span></div>
+            <img :src="item.rpicture"  class="room_img" />
+            <div class="roomtype"><span>{{ item.rtype }}</span></div>
           </div>
           <div class="room_card">
-            <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ item.number }}</span>
-            <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ item.breakfast }}</span>
-            <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ item.people_lim }}</span>
+            <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ item.rnum }}</span>
+            <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ item.bf }}</span>
+            <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ item.pnum }}</span>
           </div>
           <div class="price_card">
-            <span class="price_font">￥{{ item.price }}</span>
+            <span class="price_font">￥{{ item.rprice }}</span>
             <div>
               <el-button type="primary" @click="jump_to_room(item.rid)">查看详情</el-button>
             </div>
@@ -52,6 +47,7 @@ export default {
   data: function () {
     return {
       hid: -1,
+      map_dis: [],
       hotel_info: {},
       rooms: []
     }
@@ -76,6 +72,12 @@ export default {
       }
       this.hotel_info = Object.assign({}, dat.hotel)
       this.rooms = dat.rooms.slice()
+      this.map_dis = [
+        {
+          location: [this.hotel_info.n, this.hotel_info.s],
+          name: this.hotel_info.hname
+        }
+      ]
     }).catch(res => {
       this.showErr(`获取失败：${res}`)
     })
@@ -103,14 +105,13 @@ export default {
       })
     },
     jump_to_room (rid) {
-      this.$router.push({
+      let {href} = this.$router.resolve({
         name: 'Room',
         params: {
           rid: rid
         }
-      }).catch(res => {
-        this.showErr(`房间页面跳转失败：${res}`)
       })
+      window.open(href, '_blank')
     }
   }
 }

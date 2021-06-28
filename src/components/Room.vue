@@ -7,22 +7,22 @@
           {{ room_info.hotel.hname }}
         </router-link>
         &nbsp;>>&nbsp;
-        <router-link :to="this.$route.path">{{ room_info.roomtype }}</router-link>
+        <router-link :to="this.$route.path">{{ room_info.rtype }}</router-link>
       </div>
       <div class="room_info">
         <div class="room_left">
-          <h2 class="room_title">{{ room_info.roomtype }}</h2>
-          <img :src="room_info.img"  class="room_img" />
+          <h2 class="room_title">{{ room_info.rtype }}</h2>
+          <img :src="room_info.rpicture"  class="room_img" />
         </div>
         <div class="room_right">
           <h2 class="room_title">基本信息</h2>
           <div class="base">
-            <span class="tag">&nbsp;rid：{{ room_info.rid }}</span>
-            <span class="tag">&nbsp;hid：{{ room_info.hid }}</span>
-            <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.number }}</span>
-            <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.breakfast }}</span>
-            <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ room_info.people_lim }}</span>
-            <span class="tag"><i class="fa fa-money"></i>&nbsp;￥{{ room_info.price }}</span>
+            <!--<span class="tag">&nbsp;rid：{{ room_info.rid }}</span>-->
+            <!--<span class="tag">&nbsp;hid：{{ room_info.hid }}</span>-->
+            <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.rnum }}</span>
+            <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.bf }}</span>
+            <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ room_info.pnum }}</span>
+            <span class="tag"><i class="fa fa-money"></i>&nbsp;￥{{ room_info.rprice }}</span>
           </div>
           <h2 class="room_title">客房详情</h2>
           <div class="facilities">
@@ -34,7 +34,7 @@
             <span class="tag"><i class="fa fa-ban"></i>&nbsp;无烟客房</span>
           </div>
           <div class="bottom_info">
-            <span class="bottom_font">￥{{ room_info.price }}</span>
+            <span class="bottom_font">￥{{ room_info.rprice }}</span>
             <el-button type="primary" @click="jump_to_book">预订</el-button>
           </div>
         </div>
@@ -57,7 +57,7 @@
             <p class="nickname">{{ item.nickname }}</p>
           </div>
           <div class="right text-wrap">
-            <span>{{ item.content }}</span>
+            <span>{{ item.txt }}</span>
           </div>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default {
     // 获取房间
     this.$axios.get('/room/getroom', {
       params: {
-        rid: this.rid
+        Rid: this.rid
       }
     }).then(res => {
       let dat = res.data
@@ -107,11 +107,7 @@ export default {
         rid: this.rid
       }
     }).then(res => {
-      if (res.data === '') {
-        this.jump_to_404()
-      } else {
-        this.comments = res.data.slice()
-      }
+      this.comments = res.data.slice()
     }).catch(res => {
       this.showErr(`获取评论失败：${res}`)
     })
@@ -158,7 +154,8 @@ export default {
         return
       }
       this.$axios.post(`/rcomment/new_comment`, {
-        id: this.rid
+        rid: this.rid,
+        txt: this.comment_content
       }).then(res => {
         if (res.status !== 200) {
           this.showErr(`发表评论失败：${res}`)

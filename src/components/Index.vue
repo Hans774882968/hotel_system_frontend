@@ -78,7 +78,7 @@
       </div>
       <!--搜索结果：地图-->
       <div class="hotel_map">
-        <Map :hotels="this.map_dis"></Map>
+        <Map :hotels="this.map_dis" :center="this.ns"></Map>
       </div>
     </div>
   </div>
@@ -152,42 +152,8 @@ export default {
       hotels_dis: [],
       map_dis: [],
       ns: [], // n=经度，s=纬度
-      hotels: [
-        {
-          hid: 1,
-          addr: '中国，上海，延安西路1303号',
-          hname: '如家酒店·neo',
-          star: 2,
-          hpicture: '/static/hotel_img/1.jpg',
-          longitude: 121.435224,
-          latitude: 31.216201
-        },
-        {
-          hid: 2,
-          addr: '中国，上海，沪青平公路1209号',
-          hname: '维也纳酒店(上海虹桥国家会展中心店)',
-          star: 3,
-          hpicture: '/static/hotel_img/2.jpg',
-          longitude: 121.332638,
-          latitude: 31.174264
-        },
-        {
-          hid: 3,
-          addr: '中国，四川，成都，滨江中路9号',
-          hname: '成都万达瑞华酒店',
-          star: 5,
-          hpicture: '/static/hotel_img/3.jpg',
-          longitude: 104.076177,
-          latitude: 30.653319
-        }
-      ]
+      hotels: []
     }
-  },
-  // dbg
-  mounted () {
-    this.get_map_dis()
-    this.get_hotels_star()
-    this.get_hotels_dis()
   },
   methods: {
     showErr (msg) {
@@ -225,27 +191,31 @@ export default {
     },
     search () {
       if (!this.formCheck()) return
-      // this.showErr({
-      //   city: this.cur_city,
-      //   choose_star: this.choose_star,
-      //   date_in: this.date_in,
-      //   date_out: this.date_out,
-      //   person: this.cur_person_num
-      // })
-      this.$axios.post(`/hotel/fliter/${this.cur_city}/${this.choose_star[0]}/${this.date_in}/${this.date_out}/${this.cur_person_num}`, {
+      this.$axios.post(`/hotel/fliter/${this.cur_city}/${this.choose_star[0]}`, {
         city: this.cur_city,
         choose_star: this.choose_star,
         date_in: this.date_in,
         date_out: this.date_out,
         person: this.cur_person_num
       }).then(res => {
-        let dat = res.data
-        this.showSuc(dat)
-        this.search_suc = true
-        // dat.cityns
+        this.update_data(res.data)
       }).catch(res => {
         this.showErr(`查询失败：${res}`)
       })
+    },
+    update_data (dat) {
+      this.search_suc = true
+      this.ns = dat.cityns.slice()
+      this.hotels = dat.hotels.slice()
+      for (let i = 0; i < this.hotels.length; ++i) {
+        this.hotels.splice(i, 1, Object.assign({
+          d: AMap.GeometryUtil.distance(
+            [this.hotels[i].n, this.hotels[i].s],
+            this.ns)
+        }, this.hotels[i]))
+      }
+      this.get_hotels_star()
+      this.get_map_dis()
     },
     get_hotels_star () {
       this.hotels_star = this.hotels.slice()
@@ -253,23 +223,17 @@ export default {
         return y.star - x.star
       })
     },
-    get_hotels_dis () {
+    get_map_dis () {
       this.hotels_dis = this.hotels.slice()
       this.hotels_dis.sort(function (x, y) {
-        return x.star - y.star
+        return x.d - y.d
       })
-    },
-    get_map_dis () {
-      this.map_dis = this.hotels.slice()
-      this.map_dis.sort(function (x, y) {
-        return x.star - y.star
-      })
-      this.map_dis.reverse()
+      this.map_dis = this.hotels_dis.slice()
       for (let i = 0; i < this.map_dis.length; ++i) {
-        this.map_dis[i] = {
-          location: [this.map_dis[i].longitude, this.map_dis[i].latitude],
+        this.map_dis.splice(i, 1, Object.assign({
+          location: [this.map_dis[i].n, this.map_dis[i].s],
           name: this.map_dis[i].hname
-        }
+        }))
       }
     }
   }

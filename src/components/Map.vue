@@ -7,13 +7,24 @@ const amapKey = 'e320cd3c4695a72d107f360e5b4dd707'
 export default {
   name: 'Map',
   props: {
-    hotels: Array
+    hotels: Array,
+    center: Array
   },
   mounted () {
-    window.onload = () => {
+    window.onload = this.init_map
+    let url = `https://webapi.amap.com/maps?v=1.4.15&key=${amapKey}&callback=onload&plugin=AMap.ToolBar`
+    let jsapi = document.createElement('script')
+    jsapi.charset = 'utf-8'
+    jsapi.src = url
+    document.head.appendChild(jsapi)
+  },
+  methods: {
+    init_map () {
       let map = new AMap.Map('container', {
         zoom: 11, // 级别
-        center: this.hotels[0].location, // [104.06, 30.67], // 中心点坐标
+        center: (this.center && this.center.length > 0) ? this.center : (
+          (this.hotels && this.hotels.length) > 0 ? this.hotels[0].location : [104.06, 30.67]
+        ), // 中心点坐标
         viewMode: '3D'// 使用3D视图
       })
       // 初始化插件
@@ -38,11 +49,24 @@ export default {
       }
       map.add(markers)
     }
-    let url = `https://webapi.amap.com/maps?v=1.4.15&key=${amapKey}&callback=onload&plugin=AMap.ToolBar`
-    let jsapi = document.createElement('script')
-    jsapi.charset = 'utf-8'
-    jsapi.src = url
-    document.head.appendChild(jsapi)
+  },
+  watch: {
+    hotels: {
+      handler (n, o) {
+        this.hotels = n
+        console.log(n, o)//
+        this.init_map()
+      },
+      deep: true
+    },
+    center: {
+      handler (n, o) {
+        this.center = n
+        console.log(n, o)//
+        this.init_map()
+      },
+      deep: true
+    }
   }
 }
 </script>

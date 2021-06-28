@@ -9,7 +9,7 @@ import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // mock
-import mock from './mock'
+// import mock from './mock'
 
 Vue.use(ElementUI)
 

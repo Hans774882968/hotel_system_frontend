@@ -3,16 +3,16 @@
     <Navbar></Navbar>
     <div class="container">
       <div class="inner_container">
-        <div v-if="room_info.hasOwnProperty('hotel')" class="book_info">
+        <div v-if="room_info.hasOwnProperty('rid')" class="book_info">
           <div class="book_title">
-            <h1 class="hotel_name">{{ room_info.hotel.hname }}</h1>
-            <p class="addr"><el-icon class="el-icon-location"></el-icon>&nbsp;{{ room_info.hotel.addr }}</p>
-            <el-rate v-model="room_info.hotel.star" disabled></el-rate>
-            <h2 style="font-size: 20px" class="room_title">{{ room_info.roomtype }}</h2>
+            <h1 class="hotel_name">{{ hotel.hname }}</h1>
+            <p class="addr"><el-icon class="el-icon-location"></el-icon>&nbsp;{{ hotel.addr }}</p>
+            <el-rate v-model="hotel.star" disabled></el-rate>
+            <h2 style="font-size: 20px" class="room_title">{{ room_info.rtype }}</h2>
             <div class="room_base_info">
-              <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.number }}</span>
-              <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.breakfast }}</span>
-              <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ room_info.people_lim }}</span>
+              <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.rnum }}</span>
+              <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.bf }}</span>
+              <span class="tag"><i class="fa fa-user"></i>&nbsp;人数上限：{{ room_info.pnum }}</span>
             </div>
           </div>
           <div class="announce">
@@ -44,7 +44,7 @@
                 v-model="BookForm.custNum"
                 :step="1"
                 :min="1"
-                :max="room_info.people_lim"
+                :max="room_info.pnum"
                 step-strictly>
               </el-input-number>
             </div>
@@ -58,12 +58,12 @@
         <!--右侧展示价格-->
         <div class="price">
           <div class="price_row">
-            <span>1间*{{ day_calc }}晚</span>
-            <span>单价：￥{{ room_info.price }}</span>
+            <span>1间 * {{ day_calc }}晚</span>
+            <span style="color: #287dfa;">单价：￥{{ room_info.rprice }}</span>
           </div>
           <div class="price_row">
             <h2>应付总额</h2>
-            <h2 class="price_font">￥{{ (room_info.price * day_calc).toFixed(2) }}</h2>
+            <h2 class="price_font">￥{{ (room_info.rprice * day_calc).toFixed(2) }}</h2>
           </div>
         </div>
       </div>
@@ -80,6 +80,7 @@ export default {
     return {
       rid: -1,
       room_info: {},
+      hotel: {},
       dateArr: '',
       BookForm: {
         custName: '',
@@ -101,7 +102,7 @@ export default {
     // 获取房间
     this.$axios.get('/room/getroom', {
       params: {
-        rid: this.rid
+        Rid: this.rid
       }
     }).then(res => {
       let dat = res.data
@@ -110,6 +111,18 @@ export default {
         return
       }
       this.room_info = Object.assign({}, dat)
+      return this.$axios.get('/hotel/gethotel', {
+        params: {
+          hid: this.room_info.hid
+        }
+      })
+    }).then(res => {
+      let dat = res.data
+      if (dat === '') {
+        this.jump_to_404()
+        return
+      }
+      this.hotel = Object.assign({}, dat.hotel)
     }).catch(res => {
       this.showErr(`获取房间信息失败：${res}`)
     })
@@ -245,6 +258,7 @@ div{
   position: sticky;
   top: 1rem;
   padding: 1.5rem;
+  height: 10rem;/*高度缩小*/
 }
 .price .price_row{
   display: flex;
