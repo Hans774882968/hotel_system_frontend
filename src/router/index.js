@@ -7,6 +7,7 @@ import Room from '../components/Room'
 import Hotel from '../components/Hotel'
 import Book from '../components/Book'
 import NotFound from '../components/NotFound'
+import AliPay from '../components/AliPay'
 
 Vue.use(Router)
 
@@ -42,6 +43,11 @@ export default new Router({
       path: '/book/:rid',
       name: 'Book',
       component: Book
+    },
+    {
+      path: '/pay/:tot_price',
+      name: 'AliPay',
+      component: AliPay
     },
     {
       path: '/404',

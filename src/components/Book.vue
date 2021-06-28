@@ -8,7 +8,7 @@
             <h1 class="hotel_name">{{ hotel.hname }}</h1>
             <p class="addr"><el-icon class="el-icon-location"></el-icon>&nbsp;{{ hotel.addr }}</p>
             <el-rate v-model="hotel.star" disabled></el-rate>
-            <h2 style="font-size: 20px" class="room_title">{{ room_info.rtype }}</h2>
+            <h2 style="font-size: 20px" class="room_title">{{ room_info.txttype }}</h2>
             <div class="room_base_info">
               <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ room_info.rnum }}</span>
               <span class="tag"><i class="fa fa-bell"></i>&nbsp;早餐：{{ room_info.bf }}</span>
@@ -50,20 +50,21 @@
             </div>
             <el-button
               class="btn"
-              type="primary">
-              确认订单
+              type="primary"
+              @click="submit_dingdan">
+              提交订单
             </el-button>
           </div>
         </div>
         <!--右侧展示价格-->
         <div class="price">
           <div class="price_row">
-            <span>1间 * {{ day_calc }}晚</span>
+            <span>1间 * {{ day_calc() }}晚</span>
             <span style="color: #287dfa;">单价：￥{{ room_info.rprice }}</span>
           </div>
           <div class="price_row">
             <h2>应付总额</h2>
-            <h2 class="price_font">￥{{ (room_info.rprice * day_calc).toFixed(2) }}</h2>
+            <h2 class="price_font">￥{{ tot_price() }}</h2>
           </div>
         </div>
       </div>
@@ -81,13 +82,13 @@ export default {
       rid: -1,
       room_info: {},
       hotel: {},
-      dateArr: '',
+      dateArr: [],
       BookForm: {
         custName: '',
         inDate: '',
         outDate: '',
         custNum: 0,
-        rType: 0
+        rType: 0// getroom时获取
       }
     }
   },
@@ -111,6 +112,7 @@ export default {
         return
       }
       this.room_info = Object.assign({}, dat)
+      this.$set(this.BookForm, 'rType', this.room_info.rtype)
       return this.$axios.get('/hotel/gethotel', {
         params: {
           hid: this.room_info.hid
@@ -126,13 +128,6 @@ export default {
     }).catch(res => {
       this.showErr(`获取房间信息失败：${res}`)
     })
-  },
-  computed: {
-    day_calc () {
-      let res = (new Date(this.dateArr[1]) - new Date(this.dateArr[0])) / 86400000
-      if (Number.isNaN(res)) return 0
-      return res
-    }
   },
   methods: {
     showErr (msg) {
@@ -156,19 +151,56 @@ export default {
         this.showErr(`404页面跳转失败：${res}`)
       })
     },
-    submit_dingdan () {
+    day_calc () {
+      let res = (new Date(this.dateArr[1]) - new Date(this.dateArr[0])) / 86400000
+      if (Number.isNaN(res)) return 0
+      return res
+    },
+    tot_price () {
+      return (this.room_info.rprice * this.day_calc()).toFixed(2)
+    },
+    formCheck () {
+      if (this.dateArr.length < 2) {
+        this.showErr('请选择入住日期、退房日期')
+        return false
+      }
       [this.BookForm.inDate, this.BookForm.outDate] = this.dateArr
-      this.$axios.post('/dingdan/order', this.BookForm).then(res => {
+      if (!this.BookForm.custName.length) {
+        this.showErr('请填写住客姓名')
+        return false
+      }
+      if (!this.BookForm.inDate.length) {
+        this.showErr('请填写入住日期')
+        return false
+      }
+      if (!this.BookForm.outDate.length) {
+        this.showErr('请填写退房日期')
+        return false
+      }
+      return true
+    },
+    submit_dingdan () {
+      if (!this.formCheck()) return
+      this.$axios.post('/dingdan/order', {
+        custName: this.BookForm.custName,
+        inDate: this.BookForm.inDate,
+        outDate: this.BookForm.outDate,
+        custNum: this.BookForm.custNum,
+        rtype: this.BookForm.rType
+      }).then(res => {
         let dat = res.data
         if (dat === '下单成功') {
+          this.showSuc(dat)
           this.$router.push({
-            name: 'Room',
+            name: 'AliPay',
             params: {
-              rid: this.rid
+              tot_price: this.tot_price()
             }
           }).catch(res => {
-            this.showErr(`房间页面跳转失败：${res}`)
+            this.showErr(`支付页面跳转失败：${res}`)
           })
+        } else {
+          this.showErr(dat)
         }
       }).catch(res => {
         this.showErr(`下单失败：${res}`)

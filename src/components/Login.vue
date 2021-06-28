@@ -58,7 +58,7 @@ export default {
     },
     login () {
       if (!this.formCheck()) return
-      this.$axios.post('/login/login', {
+      this.$axios.post(`/login/login?email=${this.LoginForm.email}&password=${this.LoginForm.password}`, {
         email: this.LoginForm.email,
         password: this.LoginForm.password
       }).then(res => {

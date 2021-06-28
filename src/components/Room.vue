@@ -3,15 +3,15 @@
     <Navbar></Navbar>
     <div class="container">
       <div class="top_menu">
-        <router-link v-if="room_info.hasOwnProperty('hotel')" :to="'/hotel/'+room_info.hotel.hid">
-          {{ room_info.hotel.hname }}
+        <router-link v-if="room_info.hasOwnProperty('hid')" :to="'/hotel/'+room_info.hid">
+          {{ hotel_name }}
         </router-link>
         &nbsp;>>&nbsp;
-        <router-link :to="this.$route.path">{{ room_info.rtype }}</router-link>
+        <router-link :to="this.$route.path">{{ room_info.txttype }}</router-link>
       </div>
       <div class="room_info">
         <div class="room_left">
-          <h2 class="room_title">{{ room_info.rtype }}</h2>
+          <h2 class="room_title">{{ room_info.txttype }}</h2>
           <img :src="room_info.rpicture"  class="room_img" />
         </div>
         <div class="room_right">
@@ -53,8 +53,8 @@
         <div class="comment" v-for="(item,idx) in comments" :key="idx">
           <div class="left">
             <img src="/static/avatar_default.jpg" />
-            <p class="nickname">{{ item.email }}</p>
-            <p class="nickname">{{ item.nickname }}</p>
+            <p class="nickname">{{ users[idx].email }}</p>
+            <p class="nickname">{{ users[idx].name }}</p>
           </div>
           <div class="right text-wrap">
             <span>{{ item.txt }}</span>
@@ -73,8 +73,10 @@ export default {
   data: function () {
     return {
       rid: -1,
+      hotel_name: '',
       room_info: {},
       comments: [],
+      users: [],
       comment_content: ''
     }
   },
@@ -98,16 +100,27 @@ export default {
         return
       }
       this.room_info = Object.assign({}, dat)
+      return this.$axios.get('/hotel/gethotel', {
+        params: {
+          hid: this.room_info.hid
+        }
+      })
+    }).then(res => {
+      this.hotel_name = res.data.hotel.hname
     }).catch(res => {
       this.showErr(`获取房间信息失败：${res}`)
     })
     // 获取评论
     this.$axios.get('/rcomment/rcomment', {
       params: {
-        rid: this.rid
+        Rid: this.rid
       }
     }).then(res => {
-      this.comments = res.data.slice()
+      if (res.data === '') {
+        return
+      }
+      this.comments = res.data.comment.slice()
+      this.users = res.data.users.slice()
     }).catch(res => {
       this.showErr(`获取评论失败：${res}`)
     })
@@ -135,11 +148,10 @@ export default {
       })
     },
     jump_to_book () {
-      this.$router.push({
+      let {href} = this.$router.resolve({
         name: 'Book'
-      }).catch(res => {
-        this.showErr(`下单页面跳转失败：${res}`)
       })
+      window.open(href, '_blank')
     },
     jump_to_login () {
       this.$router.push({
@@ -167,8 +179,8 @@ export default {
         }
         this.showSuc('发表评论成功')
         this.comments.splice(0, 0, {
-          email: '10005@qq.com',
-          nickname: '888',
+          email: '798806141@qq.com',
+          nickname: 'east',
           content: this.comment_content
         })
       }).catch(res => {
@@ -293,13 +305,17 @@ a{
   display: flex;
 }
 .comment .left{
-  padding: 0.5rem;
+  padding: 1rem;
 }
 .left .nickname{
   margin: 0.5rem 0;
 }
+.left p{
+  font-weight: 600;
+  color: #287dfa;
+}
 .comment .right{
-  padding: 0.5rem;
+  padding: 1rem;
 }
 /*实现文本分段显示*/
 .comment .text-wrap{

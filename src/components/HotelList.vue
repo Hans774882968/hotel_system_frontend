@@ -6,9 +6,9 @@
       </div>
       <div class="hotel_info">
         <h1 class="hotel_name">{{ hotel.hname }}</h1>
-        <p><el-icon class="el-icon-location"></el-icon>{{ hotel.addr }}</p>
+        <p><el-icon class="el-icon-location"></el-icon>&nbsp;{{ hotel.addr }}</p>
         <el-rate v-model="hotel.star" disabled></el-rate>
-        <p>{{ (hotel.d / 1000).toFixed(3) }} km</p>
+        <p><el-icon class="el-icon-location"></el-icon>&nbsp;{{ (hotel.d / 1000).toFixed(3) }} km</p>
         <el-button class="btn" type="primary" @click="jump_to_hotel(hotel.hid)">查看详情</el-button>
       </div>
     </div>

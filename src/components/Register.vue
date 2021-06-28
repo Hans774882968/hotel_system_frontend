@@ -154,7 +154,7 @@ export default {
             center: true
           })
           this.$router.push({
-            path: '/'
+            name: 'Login'
           }).catch(res => {
             this.showErr(`跳转失败：${res}`)
           })
