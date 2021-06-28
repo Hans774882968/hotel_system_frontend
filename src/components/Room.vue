@@ -165,23 +165,23 @@ export default {
         this.showErr('请填写评论')
         return
       }
-      this.$axios.post(`/rcomment/new_comment`, {
+      this.$axios.post(`/rcomment/add/${this.rid}/${this.comment_content}`, {
         rid: this.rid,
         txt: this.comment_content
       }).then(res => {
-        if (res.status !== 200) {
+        if (res.data !== '评论成功') {
           this.showErr(`发表评论失败：${res}`)
           return
         }
-        if (res.data.code !== 200) {
-          this.jump_to_login()
-          return
-        }
         this.showSuc('发表评论成功')
+        this.users.splice(0, 0, {
+          email: '2687627309@qq.com',
+          name: 'zed'
+        })
         this.comments.splice(0, 0, {
-          email: '798806141@qq.com',
-          nickname: 'east',
-          content: this.comment_content
+          email: '2687627309@qq.com',
+          name: 'zed',
+          txt: this.comment_content
         })
       }).catch(res => {
         this.showErr(`发表评论失败：${res}`)

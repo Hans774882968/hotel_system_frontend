@@ -19,7 +19,7 @@
         <div class="room" v-for="(item,idx) in rooms" :key="idx">
           <div class="thumbnail">
             <img :src="item.rpicture"  class="room_img" />
-            <div class="roomtype"><span>{{ item.rtype }}</span></div>
+            <div class="roomtype"><span>{{ item.txttype }}</span></div>
           </div>
           <div class="room_card">
             <span class="tag"><i class="fa fa-square"></i>&nbsp;房间号：{{ item.rnum }}</span>

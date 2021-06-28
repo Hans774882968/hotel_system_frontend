@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar></Navbar>
-    <p style="color: #287dfa;font-weight: 600;">应付金额：￥ {{ tot_price }}</p>
+    <h2 style="color: #287dfa;font-weight: 600;">应付金额：￥ {{ tot_price }}</h2>
     <img src="/static/qrcode.jpg" />
   </div>
 </template>
